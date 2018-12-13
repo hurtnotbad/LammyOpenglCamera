@@ -11,6 +11,7 @@ import com.example.lammy.lammyopenglcamera.Utils.EasyGlUtils;
 import com.example.lammy.lammyopenglcamera.Utils.LogUtil;
 import com.example.lammy.lammyopenglcamera.Utils.MatrixUtils;
 import com.example.lammy.lammyopenglcamera.lyFilter.BeautyFilter;
+import com.example.lammy.lammyopenglcamera.lyFilter.BrightFilter;
 import com.example.lammy.lammyopenglcamera.lyFilter.CameraFilter;
 import com.example.lammy.lammyopenglcamera.lyFilter.FaceColorFilter;
 import com.example.lammy.lammyopenglcamera.lyFilter.GrayFilter;
@@ -85,13 +86,18 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
         magnifierFilter.setR(0.3f);
         zipPkmAnimationFilter=new ZipPkmAnimationFilter(context);
 
+        BrightFilter brightFilter = new BrightFilter(context);
+        brightFilter.setBrightness(-0.2f);
+
+
         groupFilter = new GroupFilter(cameraFilter);
-        groupFilter.addFilter(noFilter);
-        groupFilter.addFilter(grayFilter);
-        groupFilter.addFilter(faceColorFilter);
-        groupFilter.addFilter(beautyFilter);
-        groupFilter.addFilter(magnifierFilter);
-        groupFilter.addFilter(zipPkmAnimationFilter);
+//        groupFilter.addFilter(noFilter);
+//        groupFilter.addFilter(grayFilter);
+//        groupFilter.addFilter(faceColorFilter);
+//        groupFilter.addFilter(beautyFilter);
+//        groupFilter.addFilter(magnifierFilter);
+//        groupFilter.addFilter(zipPkmAnimationFilter);
+        groupFilter.addFilter(brightFilter);
 
         showFilter = new NoFilter(context);
 
