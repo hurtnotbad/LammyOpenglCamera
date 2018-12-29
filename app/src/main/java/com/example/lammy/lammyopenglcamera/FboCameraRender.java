@@ -149,18 +149,18 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
             showFilter.setPointsMatrix(MatrixUtils.getOriginalMatrix());
             showFilter.draw();
             GLES20.glReadPixels(0, 0, width, height, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, data);
-            onFrame(data.array() , 0);
+            onFrame(data.array() ,width,height ,0);
             isShoot = false;
             EasyGlUtils.unBindFrameBuffer();
             // 保存了图片 恢复反转
             showFilter.flipY();
         }
     }
-    public void onFrame(final byte[] bytes, long time) {
+    public void onFrame(final byte[] bytes, final int width, final int height , long time) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Bitmap bitmap=Bitmap.createBitmap(1080,2012, Bitmap.Config.ARGB_8888);
+                Bitmap bitmap=Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888);
                 ByteBuffer b=ByteBuffer.wrap(bytes);
                 bitmap.copyPixelsFromBuffer(b);
                 saveBitmap(bitmap);
@@ -172,8 +172,12 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
     public void saveBitmap(Bitmap b){
         String path = Environment.getExternalStorageDirectory().getAbsolutePath()+"/";
 
-        long dataTake = System.currentTimeMillis();
-        final String jpegName=path+ dataTake +".jpg";
+        File file = new File(path+"lammyPhoto");
+        if(!file.exists()){
+            file.mkdirs();
+        }
+        long takeTime = System.currentTimeMillis();
+        final String jpegName=file.getAbsolutePath()+ "/"+ takeTime +".jpg";
         LogUtil.e("jpegName = "+jpegName);
         try {
             FileOutputStream fout = new FileOutputStream(jpegName);

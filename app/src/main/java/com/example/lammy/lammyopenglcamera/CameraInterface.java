@@ -3,6 +3,7 @@ package com.example.lammy.lammyopenglcamera;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -11,6 +12,7 @@ import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
+import android.hardware.camera2.params.StreamConfigurationMap;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
@@ -55,7 +57,7 @@ public class CameraInterface {
     private CameraCharacteristics mCameraCharacteristics;
     public boolean openCamera(){
 
-         CameraManager cameraManager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
+         final CameraManager cameraManager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 return false;
             }
@@ -67,6 +69,13 @@ public class CameraInterface {
                     try {
 
                         mPreViewBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
+
+                        mCameraCharacteristics = cameraManager.getCameraCharacteristics(cameraID);
+                        StreamConfigurationMap map = mCameraCharacteristics.get(CameraCharacteristics
+                                .SCALER_STREAM_CONFIGURATION_MAP);
+                        //获取相机支持的size
+                        Size size[] =  map.getOutputSizes(ImageFormat.JPEG);
+                        previewSize = size[0];
                         surfaceTexture.setDefaultBufferSize(previewSize.getWidth() , previewSize.getHeight());
                         Surface surface = new Surface(surfaceTexture);
                         mPreViewBuilder.addTarget( surface);
