@@ -6,6 +6,7 @@ import android.graphics.SurfaceTexture;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Environment;
+import android.view.SurfaceHolder;
 
 import com.example.lammy.lammyopenglcamera.Utils.EasyGlUtils;
 import com.example.lammy.lammyopenglcamera.Utils.LogUtil;
@@ -47,13 +48,31 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
 
     public FboCameraRender(Context context) {
         this.context = context;
-        cameraInterface = new CameraInterface(context);
     }
 
     public void setGlSurfaceView(GLSurfaceView glSurfaceView) {
         this.glSurfaceView = glSurfaceView;
         glSurfaceView.setEGLContextClientVersion(2);
         glSurfaceView.setRenderer(this);
+        glSurfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
+            @Override
+            public void surfaceCreated(SurfaceHolder holder) {
+                if(cameraInterface!=null) {
+                    cameraInterface.openCamera();
+                    LogUtil.e("lammylog surfaceCreated");
+                }
+            }
+
+            @Override
+            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+            }
+
+            @Override
+            public void surfaceDestroyed(SurfaceHolder holder) {
+
+            }
+        });
     }
 
 
@@ -70,6 +89,7 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
 
         cameraFilter = new CameraFilter(context);
         mSurfaceTexture = cameraFilter.getmSurfaceTexture();
+        cameraInterface = new CameraInterface(context);
         cameraInterface.setSurfaceTexture(mSurfaceTexture);
         cameraInterface.openCamera();
         cameraFilter.setCameraId(cameraInterface.getCameraId());

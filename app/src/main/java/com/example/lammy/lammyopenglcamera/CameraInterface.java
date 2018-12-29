@@ -56,7 +56,7 @@ public class CameraInterface {
     private CameraCaptureSession mCameraSession;
     private CameraCharacteristics mCameraCharacteristics;
     public boolean openCamera(){
-
+        closeCamera();
          final CameraManager cameraManager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 return false;
