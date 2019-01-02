@@ -21,6 +21,8 @@ import android.util.Size;
 import android.view.Surface;
 import android.view.WindowManager;
 
+import com.example.lammy.lammyopenglcamera.Utils.LogUtil;
+
 import java.util.Arrays;
 
 /**
@@ -30,16 +32,18 @@ import java.util.Arrays;
 public class CameraInterface {
 
     private String cameraID = 0+"";
-    private Size previewSize = new Size(1920,1080);
+    public static Size previewSize ;
     private  Context context;
     private SurfaceTexture surfaceTexture;
 
     public CameraInterface(Context context){
         this.context =context;
+        getPreviewSize();
     }
     public void setSurfaceTexture(SurfaceTexture surfaceTexture){
         this.surfaceTexture =surfaceTexture;
         startCameraThread();
+
     }
     private Handler mCameraHandler;
     private HandlerThread mCameraThread;
@@ -49,6 +53,21 @@ public class CameraInterface {
         mCameraHandler = new Handler(mCameraThread.getLooper());
     }
 
+    private void getPreviewSize(){
+        CameraManager cameraManager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
+        try {
+            mCameraCharacteristics = cameraManager.getCameraCharacteristics(cameraID);
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
+        StreamConfigurationMap map = mCameraCharacteristics.get(CameraCharacteristics
+                .SCALER_STREAM_CONFIGURATION_MAP);
+        //获取相机支持的size
+        Size size[] =  map.getOutputSizes(ImageFormat.JPEG);
+        previewSize = size[0];
+        LogUtil.e("onSurfaceChanged cameraWidth0 = " + previewSize.getWidth());
+        LogUtil.e("onSurfaceChanged cameraHeight0= " + previewSize.getHeight());
+    }
 
 //    private ImageReader mImageReader;
     private CameraDevice mCameraDevice;
@@ -199,7 +218,7 @@ public class CameraInterface {
         }else if(cameraID.equals("0")){
             this.cameraID = "1";
         }
-//      openCamera();
+      openCamera();
     }
 
 }

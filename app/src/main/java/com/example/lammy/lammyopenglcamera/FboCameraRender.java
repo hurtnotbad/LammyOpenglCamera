@@ -6,7 +6,11 @@ import android.graphics.SurfaceTexture;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Environment;
+
+import android.util.DisplayMetrics;
+import android.util.Size;
 import android.view.SurfaceHolder;
+import android.widget.RelativeLayout;
 
 import com.example.lammy.lammyopenglcamera.Utils.EasyGlUtils;
 import com.example.lammy.lammyopenglcamera.Utils.LogUtil;
@@ -138,15 +142,51 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
 
         groupFilter = new GroupFilter(cameraFilter);
         groupFilter.addFilter(new GrayFilter(context));
+        groupFilter.addFilter(new ZipPkmAnimationFilter(context));
     }
 
 
+    private Size getPreviewSize(int cameraWidth,int cameraHeight){
+        DisplayMetrics dm2 = context.getResources().getDisplayMetrics();
+        int screenWidth = dm2.widthPixels;
+        int screenHeight = dm2.heightPixels;
+        LogUtil.e("onSurfaceChanged screenWidth = " + screenWidth);
+        LogUtil.e("onSurfaceChanged screenHeight = " + screenHeight);
+        int cameraHeight2 = Math.max(cameraHeight , cameraWidth);
+        int cameraWidth2 = Math.min(cameraHeight , cameraWidth);
+        LogUtil.e("onSurfaceChanged cameraWidth = " + cameraWidth);
+        LogUtil.e("onSurfaceChanged cameraHeight = " + cameraHeight);
+        float wh = ((float)screenWidth)/screenHeight;
+        float cameraWH = ((float)cameraWidth2)/cameraHeight2;
+        LogUtil.e("onSurfaceChanged wh = " + wh);
+        LogUtil.e("onSurfaceChanged cameraWH = " + cameraWH);
+        if(cameraWH > wh){
+            int w = screenWidth;
+            int h = (int)(screenWidth/cameraWH);
+            return new Size(w,h);
+        }else{
+            int h = screenHeight;
+            int w =(int) (h * cameraWH);
+            return new Size(w,h);
+        }
+
+    }
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
 
-        glViewport(0, 0, width, height);
-        LogUtil.e("onSurfaceChanged w = " + width);
+        int cameraWidth = cameraInterface.previewSize.getWidth();
+        int cameraHeight = cameraInterface.previewSize.getHeight();
+        Size size = getPreviewSize(cameraWidth ,cameraHeight );
+        width = size.getWidth();
+        height = size.getHeight();
+        LogUtil.e("onSurfaceChanged width = " + width);
         LogUtil.e("onSurfaceChanged height = " + height);
+
+
+//        height =cameraInterface.previewSize.getWidth();
+//        width = cameraInterface.previewSize.getHeight();
+
+        glViewport(0, 0, width, height);
 
         if(groupFilter == null){
             LogUtil.e("groupFilter is null");
@@ -239,11 +279,6 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
 
     public void changeCamera(){
         cameraInterface.changeCamera();
-        // 得重新创建，否则 切换的时候会倒立下，再正
-//        CameraFilter cameraFilter = new CameraFilter(context);
-        cameraInterface.closeCamera();
         cameraFilter.setCameraId(cameraInterface.getCameraId());
-        cameraInterface.openCamera();
-//        setFilter();
     }
 }

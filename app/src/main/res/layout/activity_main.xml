@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    >
 
   <android.opengl.GLSurfaceView
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      android:layout_width="1080px"
+      android:layout_height="1440px"
       android:id="@+id/glSurfaceView"
+
       />
     <Button
         android:layout_width="wrap_content"
@@ -25,6 +26,7 @@
   <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:background="@android:color/darker_gray"
       android:text="切换相机"
       android:onClick="changeCamera"
       />
