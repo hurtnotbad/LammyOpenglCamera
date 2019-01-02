@@ -17,6 +17,9 @@ public class GroupFilter {
         height = cameraFilter.getHeight();
         createFrameBuffer();
     }
+    public void setCameraFilter(CameraFilter cameraFilter){
+        this.cameraFilter = cameraFilter;
+    }
 
     public void addFilter(LyFilter lyFilter){
         lyFilters.add(lyFilter);

@@ -48,6 +48,7 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
 
     public FboCameraRender(Context context) {
         this.context = context;
+        cameraInterface = new CameraInterface(context);
     }
 
     public void setGlSurfaceView(GLSurfaceView glSurfaceView) {
@@ -57,7 +58,7 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
         glSurfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
-                if(cameraInterface!=null) {
+                if(cameraInterface!=null && cameraFilter!= null) {
                     cameraInterface.openCamera();
                     LogUtil.e("lammylog surfaceCreated");
                 }
@@ -70,7 +71,10 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
 
             @Override
             public void surfaceDestroyed(SurfaceHolder holder) {
-
+                if(cameraInterface!=null && cameraFilter!= null) {
+//                    cameraInterface.closeCamera();
+                    LogUtil.e("lammylog surfaceCreated");
+                }
             }
         });
     }
@@ -87,40 +91,53 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 
+        setFilter();
+//        cameraFilter = new CameraFilter(context);
+//        mSurfaceTexture = cameraFilter.getmSurfaceTexture();
+//        cameraInterface.setSurfaceTexture(mSurfaceTexture);
+//        cameraInterface.openCamera();
+//        cameraFilter.setCameraId(cameraInterface.getCameraId());
+//
+//        noFilter = new NoFilter(context);
+//        grayFilter = new GrayFilter(context);
+//        faceColorFilter = new FaceColorFilter(context);
+//        faceColorFilter.setIntensity(1f);
+//        beautyFilter = new BeautyFilter(context);
+//        beautyFilter.setBeautyProgress(3);
+//        magnifierFilter = new MagnifierFilter(context);
+//        magnifierFilter.setCenterPoint(new float[]{0.6f,0.5f});
+//        magnifierFilter.setOpinionSize(2f);
+//        magnifierFilter.setR(0.3f);
+//        zipPkmAnimationFilter=new ZipPkmAnimationFilter(context);
+//
+//        BrightFilter brightFilter = new BrightFilter(context);
+//        brightFilter.setBrightness(0.2f);
+//
+//
+//        groupFilter = new GroupFilter(cameraFilter);
+////        groupFilter.addFilter(noFilter);
+////        groupFilter.addFilter(grayFilter);
+////        groupFilter.addFilter(faceColorFilter);
+////        groupFilter.addFilter(beautyFilter);
+////        groupFilter.addFilter(magnifierFilter);
+////        groupFilter.addFilter(zipPkmAnimationFilter);
+//        groupFilter.addFilter(brightFilter);
+
+        showFilter = new NoFilter(context);
+
+    }
+
+
+
+    public void setFilter(){
         cameraFilter = new CameraFilter(context);
         mSurfaceTexture = cameraFilter.getmSurfaceTexture();
-        cameraInterface = new CameraInterface(context);
         cameraInterface.setSurfaceTexture(mSurfaceTexture);
         cameraInterface.openCamera();
         cameraFilter.setCameraId(cameraInterface.getCameraId());
 
-        noFilter = new NoFilter(context);
-        grayFilter = new GrayFilter(context);
-        faceColorFilter = new FaceColorFilter(context);
-        faceColorFilter.setIntensity(1f);
-        beautyFilter = new BeautyFilter(context);
-        beautyFilter.setBeautyProgress(3);
-        magnifierFilter = new MagnifierFilter(context);
-        magnifierFilter.setCenterPoint(new float[]{0.6f,0.5f});
-        magnifierFilter.setOpinionSize(2f);
-        magnifierFilter.setR(0.3f);
-        zipPkmAnimationFilter=new ZipPkmAnimationFilter(context);
-
-        BrightFilter brightFilter = new BrightFilter(context);
-        brightFilter.setBrightness(-0.2f);
-
-
         groupFilter = new GroupFilter(cameraFilter);
-//        groupFilter.addFilter(noFilter);
-//        groupFilter.addFilter(grayFilter);
-//        groupFilter.addFilter(faceColorFilter);
-//        groupFilter.addFilter(beautyFilter);
-//        groupFilter.addFilter(magnifierFilter);
-//        groupFilter.addFilter(zipPkmAnimationFilter);
-        groupFilter.addFilter(brightFilter);
-
-        showFilter = new NoFilter(context);
-
+        groupFilter.addFilter(new GrayFilter(context));
     }
 
 
@@ -220,5 +237,13 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
         GLES20.glDeleteTextures(1, mExportTexture, 0);
     }
 
-
+    public void changeCamera(){
+        cameraInterface.changeCamera();
+        // 得重新创建，否则 切换的时候会倒立下，再正
+//        CameraFilter cameraFilter = new CameraFilter(context);
+        cameraInterface.closeCamera();
+        cameraFilter.setCameraId(cameraInterface.getCameraId());
+        cameraInterface.openCamera();
+//        setFilter();
+    }
 }

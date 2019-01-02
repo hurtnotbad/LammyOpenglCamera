@@ -129,7 +129,22 @@ public  class CameraFilter {
     /**
      * 启用顶点坐标和纹理坐标进行绘制
      */
+    int index= 0;
     public void draw(){
+
+        // 在切换相机的时候，切换的瞬间容易看到，纹理映射，旋转前的图像，因此，卡顿21帧不绘制
+        if(isChangeCamera){
+            if(index > 40){
+                index = 0;
+                isChangeCamera = false;
+            }else{
+                index ++;
+                return;
+            }
+
+
+        }
+
 
         boolean a=GLES20.glIsEnabled(GLES20.GL_DEPTH_TEST);
         if(a){
@@ -266,7 +281,9 @@ public  class CameraFilter {
         return cameraId;
     }
 
+    private boolean isChangeCamera = false;
     public void setCameraId(String cameraId){
+        isChangeCamera = true;
         this.cameraId  = cameraId;
         if(cameraId.equals("0")) {
             vTextureCoordinateBuffer = BufferUtil.floatToBuffer(coordCameraBack);

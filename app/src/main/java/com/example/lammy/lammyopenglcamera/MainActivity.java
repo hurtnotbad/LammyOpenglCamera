@@ -65,7 +65,9 @@ public class MainActivity extends AppCompatActivity {
     public void takePhoto(View view){
         fboCameraRender.takePhoto();
     }
-
+    public void changeCamera(View view){
+        fboCameraRender.changeCamera();
+    }
     private void requestPermissions() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             onDonePermissionGranted();

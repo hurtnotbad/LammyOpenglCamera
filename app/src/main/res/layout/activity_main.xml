@@ -22,4 +22,11 @@
         android:layout_centerHorizontal="true"
         />
 
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="切换相机"
+      android:onClick="changeCamera"
+      />
+
 </RelativeLayout>

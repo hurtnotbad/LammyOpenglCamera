@@ -193,11 +193,13 @@ public class CameraInterface {
         return cameraID;
     }
 
-    public void changeCamera(String cameraID){
-        this.cameraID = cameraID;
-        closeCamera();
-        openCamera();
-
+    public void changeCamera(){
+        if(cameraID.equals("1")){
+            this.cameraID = "0";
+        }else if(cameraID.equals("0")){
+            this.cameraID = "1";
+        }
+//      openCamera();
     }
 
 }
