@@ -141,44 +141,19 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
         cameraFilter.setCameraId(cameraInterface.getCameraId());
 
         groupFilter = new GroupFilter(cameraFilter);
-        groupFilter.addFilter(new GrayFilter(context));
+//        groupFilter.addFilter(new GrayFilter(context));
         groupFilter.addFilter(new ZipPkmAnimationFilter(context));
     }
 
 
-    private Size getPreviewSize(int cameraWidth,int cameraHeight){
-        DisplayMetrics dm2 = context.getResources().getDisplayMetrics();
-        int screenWidth = dm2.widthPixels;
-        int screenHeight = dm2.heightPixels;
-        LogUtil.e("onSurfaceChanged screenWidth = " + screenWidth);
-        LogUtil.e("onSurfaceChanged screenHeight = " + screenHeight);
-        int cameraHeight2 = Math.max(cameraHeight , cameraWidth);
-        int cameraWidth2 = Math.min(cameraHeight , cameraWidth);
-        LogUtil.e("onSurfaceChanged cameraWidth = " + cameraWidth);
-        LogUtil.e("onSurfaceChanged cameraHeight = " + cameraHeight);
-        float wh = ((float)screenWidth)/screenHeight;
-        float cameraWH = ((float)cameraWidth2)/cameraHeight2;
-        LogUtil.e("onSurfaceChanged wh = " + wh);
-        LogUtil.e("onSurfaceChanged cameraWH = " + cameraWH);
-        if(cameraWH > wh){
-            int w = screenWidth;
-            int h = (int)(screenWidth/cameraWH);
-            return new Size(w,h);
-        }else{
-            int h = screenHeight;
-            int w =(int) (h * cameraWH);
-            return new Size(w,h);
-        }
 
-    }
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
 
-        int cameraWidth = cameraInterface.previewSize.getWidth();
-        int cameraHeight = cameraInterface.previewSize.getHeight();
-        Size size = getPreviewSize(cameraWidth ,cameraHeight );
-        width = size.getWidth();
-        height = size.getHeight();
+
+//        Size size = cameraInterface.getCameraViewSize();
+//        width = size.getWidth();
+//        height = size.getHeight();
         LogUtil.e("onSurfaceChanged width = " + width);
         LogUtil.e("onSurfaceChanged height = " + height);
 
@@ -198,7 +173,6 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
         EasyGlUtils.genTexturesWithParameter(1,mExportTexture,0,GLES20.GL_RGBA,width, height);
     }
 
-    NoFilter noFilter;
 
     @Override
     public void onDrawFrame(GL10 gl) {

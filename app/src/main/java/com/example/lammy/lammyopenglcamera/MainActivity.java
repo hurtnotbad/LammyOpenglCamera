@@ -11,12 +11,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.lammy.lammyopenglcamera.Utils.LogUtil;
-import com.example.lammy.lammyopenglcamera.etc.A;
-import com.example.lammy.lammyopenglcamera.etc.B;
-
-import java.nio.FloatBuffer;
-
 public class MainActivity extends AppCompatActivity {
 
     private static final int requestCode = 100;
@@ -27,16 +21,19 @@ public class MainActivity extends AppCompatActivity {
     };
 
 
-
+    /**
+     * 发现在   定义了cameraview后，代码中立即修改glsurfaceview大小，无效，必须先手后修改
+     * 或者可以在定义好尺寸后 在setcontentview 才生效
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        glSurfaceView = findViewById(R.id.glSurfaceView);
+//        setContentView(R.layout.activity_main);
+//        cameraView = findViewById(R.id.camera_view);
         requestPermissions();
-
-
     }
+
 
 
     @Override
@@ -53,12 +50,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private GLSurfaceView glSurfaceView;
     private FboCameraRender fboCameraRender;
 
     private void onDonePermissionGranted() {
+
+        CameraView cameraView = new CameraView(this);
+        GLSurfaceView glSurfaceView = cameraView.findViewById(R.id.glSurfaceView);
         fboCameraRender = new FboCameraRender(this);
         fboCameraRender.setGlSurfaceView(glSurfaceView);
+        setContentView(cameraView);
 
     }
 

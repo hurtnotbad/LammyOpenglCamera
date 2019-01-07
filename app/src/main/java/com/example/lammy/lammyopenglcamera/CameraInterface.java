@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.util.DisplayMetrics;
 import android.util.Size;
 import android.view.Surface;
 import android.view.WindowManager;
@@ -32,7 +33,7 @@ import java.util.Arrays;
 public class CameraInterface {
 
     private String cameraID = 0+"";
-    public static Size previewSize ;
+    private static Size previewSize ;
     private  Context context;
     private SurfaceTexture surfaceTexture;
 
@@ -65,8 +66,8 @@ public class CameraInterface {
         //获取相机支持的size
         Size size[] =  map.getOutputSizes(ImageFormat.JPEG);
         previewSize = size[0];
-        LogUtil.e("onSurfaceChanged cameraWidth0 = " + previewSize.getWidth());
-        LogUtil.e("onSurfaceChanged cameraHeight0= " + previewSize.getHeight());
+//        LogUtil.e("onSurfaceChanged cameraWidth0 = " + previewSize.getWidth());
+//        LogUtil.e("onSurfaceChanged cameraHeight0= " + previewSize.getHeight());
     }
 
 //    private ImageReader mImageReader;
@@ -219,6 +220,83 @@ public class CameraInterface {
             this.cameraID = "1";
         }
       openCamera();
+    }
+
+    public  Size getCameraViewSize(){
+        CameraManager cameraManager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
+        try {
+            mCameraCharacteristics = cameraManager.getCameraCharacteristics(cameraID);
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
+        StreamConfigurationMap map = mCameraCharacteristics.get(CameraCharacteristics
+                .SCALER_STREAM_CONFIGURATION_MAP);
+        //获取相机支持的size
+        Size size[] =  map.getOutputSizes(ImageFormat.JPEG);
+
+        int cameraWidth = size[0].getWidth();
+        int cameraHeight = size[0].getHeight();
+        DisplayMetrics dm2 = context.getResources().getDisplayMetrics();
+        int screenWidth = dm2.widthPixels;
+        int screenHeight = dm2.heightPixels;
+//        LogUtil.e("onSurfaceChanged screenWidth = " + screenWidth);
+//        LogUtil.e("onSurfaceChanged screenHeight = " + screenHeight);
+        int cameraHeight2 = Math.max(cameraHeight , cameraWidth);
+        int cameraWidth2 = Math.min(cameraHeight , cameraWidth);
+//        LogUtil.e("onSurfaceChanged cameraWidth = " + cameraWidth);
+//        LogUtil.e("onSurfaceChanged cameraHeight = " + cameraHeight);
+        float wh = ((float)screenWidth)/screenHeight;
+        float cameraWH = ((float)cameraWidth2)/cameraHeight2;
+//        LogUtil.e("onSurfaceChanged wh = " + wh);
+//        LogUtil.e("onSurfaceChanged cameraWH = " + cameraWH);
+        if(cameraWH > wh){
+            int w = screenWidth;
+            int h = (int)(screenWidth/cameraWH);
+            return new Size(w,h);
+        }else{
+            int h = screenHeight;
+            int w =(int) (h * cameraWH);
+            return new Size(w,h);
+        }
+    }
+
+    public  static Size getCameraViewSize(Context context){
+        CameraManager cameraManager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
+        CameraCharacteristics  mCameraCharacteristics = null;
+        try {
+              mCameraCharacteristics = cameraManager.getCameraCharacteristics("0");
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
+        StreamConfigurationMap map = mCameraCharacteristics.get(CameraCharacteristics
+                .SCALER_STREAM_CONFIGURATION_MAP);
+        //获取相机支持的size
+        Size size[] =  map.getOutputSizes(ImageFormat.JPEG);
+
+        int cameraWidth = size[0].getWidth();
+        int cameraHeight = size[0].getHeight();
+        DisplayMetrics dm2 = context.getResources().getDisplayMetrics();
+        int screenWidth = dm2.widthPixels;
+        int screenHeight = dm2.heightPixels;
+//        LogUtil.e("onSurfaceChanged screenWidth = " + screenWidth);
+//        LogUtil.e("onSurfaceChanged screenHeight = " + screenHeight);
+        int cameraHeight2 = Math.max(cameraHeight , cameraWidth);
+        int cameraWidth2 = Math.min(cameraHeight , cameraWidth);
+//        LogUtil.e("onSurfaceChanged cameraWidth = " + cameraWidth);
+//        LogUtil.e("onSurfaceChanged cameraHeight = " + cameraHeight);
+        float wh = ((float)screenWidth)/screenHeight;
+        float cameraWH = ((float)cameraWidth2)/cameraHeight2;
+//        LogUtil.e("onSurfaceChanged wh = " + wh);
+//        LogUtil.e("onSurfaceChanged cameraWH = " + cameraWH);
+        if(cameraWH > wh){
+            int w = screenWidth;
+            int h = (int)(screenWidth/cameraWH);
+            return new Size(w,h);
+        }else{
+            int h = screenHeight;
+            int w =(int) (h * cameraWH);
+            return new Size(w,h);
+        }
     }
 
 }
