@@ -117,29 +117,38 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
+
+
     long delayTime = 0;
     int chooseColor = 0x5CACEEff;
     int unChooseColor = 0xffffffff;
 
-    public void closeSetDelayTimeTake(View view){
-
+    private void closeSetDelayTimeTake(){
         setTimeLayout.setVisibility(View.GONE);
         bt_closeSetTime.setVisibility(View.GONE);
         bt_openSetTime.setVisibility(View.VISIBLE);
     }
 
-    public void openSetDelayTimeTake(View view){
+    public void closeSetDelayTimeTake(View view){
+        closeSetDelayTimeTake();
+    }
 
+    private void openSetDelayTimeTake(){
         bt_closeSetTime.setVisibility(View.VISIBLE);
         bt_openSetTime.setVisibility(View.GONE);
         setTimeLayout.setVisibility(View.VISIBLE);
+    }
+    public void openSetDelayTimeTake(View view){
+        openSetDelayTimeTake();
     }
     ImageButton bt_closeSetTime,bt_openSetTime;
     LinearLayout setTimeLayout;
     TextView tv_closeDelay ,tv_3SecondDelay,tv_5SecondDelay,tv_10SecondDelay;
     TextView timeView;
+    CircleImageView imageView;
     private void initView(){
 
+        imageView = cameraView.findViewById(R.id.gallery);
         setTimeLayout = cameraView.findViewById(R.id.set_time_layout);
         bt_closeSetTime = cameraView.findViewById(R.id.close_set_time_layout);
         bt_openSetTime = cameraView.findViewById(R.id.bt_open_set_time);
@@ -178,6 +187,7 @@ public class MainActivity extends AppCompatActivity{
                 tv_5SecondDelay.setTextColor(unChooseColor);
                 tv_10SecondDelay.setTextColor(unChooseColor);
                 bt_openSetTime.setBackgroundResource(R.mipmap.bt_time_set_choose);
+                closeSetDelayTimeTake();
             }
         });
         tv_5SecondDelay.setOnClickListener(new View.OnClickListener() {
@@ -189,6 +199,7 @@ public class MainActivity extends AppCompatActivity{
                 tv_5SecondDelay.setTextColor(chooseColor);
                 tv_10SecondDelay.setTextColor(unChooseColor);
                 bt_openSetTime.setBackgroundResource(R.mipmap.bt_time_set_choose);
+                closeSetDelayTimeTake();
             }
         });
         tv_10SecondDelay.setOnClickListener(new View.OnClickListener() {
@@ -200,6 +211,7 @@ public class MainActivity extends AppCompatActivity{
                 tv_5SecondDelay.setTextColor(unChooseColor);
                 tv_10SecondDelay.setTextColor(chooseColor);
                 bt_openSetTime.setBackgroundResource(R.mipmap.bt_time_set_choose);
+                closeSetDelayTimeTake();
             }
         });
 

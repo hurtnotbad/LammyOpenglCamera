@@ -143,6 +143,9 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
         groupFilter = new GroupFilter(cameraFilter);
 //        groupFilter.addFilter(new GrayFilter(context));
         groupFilter.addFilter(new ZipPkmAnimationFilter(context));
+        BrightFilter brightFilter = new BrightFilter(context);
+        brightFilter.setBrightness(0.2f);
+        groupFilter.addFilter(brightFilter);
     }
 
 
@@ -150,16 +153,6 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
 
-
-//        Size size = cameraInterface.getCameraViewSize();
-//        width = size.getWidth();
-//        height = size.getHeight();
-        LogUtil.e("onSurfaceChanged width = " + width);
-        LogUtil.e("onSurfaceChanged height = " + height);
-
-
-//        height =cameraInterface.previewSize.getWidth();
-//        width = cameraInterface.previewSize.getHeight();
 
         glViewport(0, 0, width, height);
 

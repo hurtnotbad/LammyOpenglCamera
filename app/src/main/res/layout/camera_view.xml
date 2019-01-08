@@ -106,6 +106,17 @@
       android:background="@android:color/black"
       >
 
+    <com.example.lammy.lammyopenglcamera.CircleImageView
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:id="@+id/gallery"
+        android:background="@android:color/black"
+        android:scaleType="fitXY"
+        android:src="@mipmap/lammy"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp"
+        />
+
     <ImageButton
         android:layout_width="60dp"
         android:layout_height="60dp"
