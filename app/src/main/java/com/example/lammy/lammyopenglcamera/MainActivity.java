@@ -9,9 +9,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
     private static final int requestCode = 100;
     private String permissions[] = new String[]{
@@ -23,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * 发现在   定义了cameraview后，代码中立即修改glsurfaceview大小，无效，必须先手后修改
-     * 或者可以在定义好尺寸后 在setcontentview 才生效
+     * 或者可以在定义好尺寸后 在setcontentview 才生效，因此在camera_view 中写 相机界面
      * @param savedInstanceState
      */
     @Override
@@ -51,19 +54,48 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private FboCameraRender fboCameraRender;
-
+    private CameraView cameraView;
     private void onDonePermissionGranted() {
 
-        CameraView cameraView = new CameraView(this);
+        cameraView = new CameraView(this);
         GLSurfaceView glSurfaceView = cameraView.findViewById(R.id.glSurfaceView);
         fboCameraRender = new FboCameraRender(this);
         fboCameraRender.setGlSurfaceView(glSurfaceView);
         setContentView(cameraView);
+        initView();
 
     }
 
     public void takePhoto(View view){
-        fboCameraRender.takePhoto();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    final int second = (int)delayTime/1000;
+                    for(int i = 0; i < second ; i ++){
+                        final int finalI = i;
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                timeView.setText((second - finalI) +"");
+                            }
+                        });
+                        Thread.sleep(1000);
+                    }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            timeView.setText("");
+                        }
+                    });
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                fboCameraRender.takePhoto();
+            }
+        }).start();
+
     }
     public void changeCamera(View view){
         fboCameraRender.changeCamera();
@@ -84,6 +116,96 @@ public class MainActivity extends AppCompatActivity {
             onDonePermissionGranted();
         }
     }
+
+    long delayTime = 0;
+    int chooseColor = 0x5CACEEff;
+    int unChooseColor = 0xffffffff;
+
+    public void closeSetDelayTimeTake(View view){
+
+        setTimeLayout.setVisibility(View.GONE);
+        bt_closeSetTime.setVisibility(View.GONE);
+        bt_openSetTime.setVisibility(View.VISIBLE);
+    }
+
+    public void openSetDelayTimeTake(View view){
+
+        bt_closeSetTime.setVisibility(View.VISIBLE);
+        bt_openSetTime.setVisibility(View.GONE);
+        setTimeLayout.setVisibility(View.VISIBLE);
+    }
+    ImageButton bt_closeSetTime,bt_openSetTime;
+    LinearLayout setTimeLayout;
+    TextView tv_closeDelay ,tv_3SecondDelay,tv_5SecondDelay,tv_10SecondDelay;
+    TextView timeView;
+    private void initView(){
+
+        setTimeLayout = cameraView.findViewById(R.id.set_time_layout);
+        bt_closeSetTime = cameraView.findViewById(R.id.close_set_time_layout);
+        bt_openSetTime = cameraView.findViewById(R.id.bt_open_set_time);
+
+        timeView = cameraView.findViewById(R.id.time_view);
+
+        tv_closeDelay = cameraView.findViewById(R.id.close_delay);
+        tv_3SecondDelay = cameraView.findViewById(R.id.tv_3_delay);
+        tv_5SecondDelay = cameraView.findViewById(R.id.tv_5_delay);
+        tv_10SecondDelay = cameraView.findViewById(R.id.tv_10_delay);
+
+        tv_closeDelay.setTextColor(chooseColor);
+
+        // 默认是关闭 设置延迟拍照的
+        setTimeLayout.setVisibility(View.GONE);
+        bt_closeSetTime.setVisibility(View.GONE);
+        bt_openSetTime.setVisibility(View.VISIBLE);
+
+        tv_closeDelay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                delayTime = 0;
+                tv_closeDelay.setTextColor(chooseColor);
+                tv_3SecondDelay.setTextColor(unChooseColor);
+                tv_5SecondDelay.setTextColor(unChooseColor);
+                tv_10SecondDelay.setTextColor(unChooseColor);
+                bt_openSetTime.setBackgroundResource(R.mipmap.bt_time_set);
+            }
+        });
+        tv_3SecondDelay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                delayTime = 3000;
+                tv_closeDelay.setTextColor(unChooseColor);
+                tv_3SecondDelay.setTextColor(chooseColor);
+                tv_5SecondDelay.setTextColor(unChooseColor);
+                tv_10SecondDelay.setTextColor(unChooseColor);
+                bt_openSetTime.setBackgroundResource(R.mipmap.bt_time_set_choose);
+            }
+        });
+        tv_5SecondDelay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                delayTime = 5000;
+                tv_closeDelay.setTextColor(unChooseColor);
+                tv_3SecondDelay.setTextColor(unChooseColor);
+                tv_5SecondDelay.setTextColor(chooseColor);
+                tv_10SecondDelay.setTextColor(unChooseColor);
+                bt_openSetTime.setBackgroundResource(R.mipmap.bt_time_set_choose);
+            }
+        });
+        tv_10SecondDelay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                delayTime = 10000;
+                tv_closeDelay.setTextColor(unChooseColor);
+                tv_3SecondDelay.setTextColor(unChooseColor);
+                tv_5SecondDelay.setTextColor(unChooseColor);
+                tv_10SecondDelay.setTextColor(chooseColor);
+                bt_openSetTime.setBackgroundResource(R.mipmap.bt_time_set_choose);
+            }
+        });
+
+
+    }
+
 
 
 }

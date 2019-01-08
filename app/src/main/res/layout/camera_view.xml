@@ -6,29 +6,138 @@
     tools:context=".MainActivity"
     >
 
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="40dp"
+      android:id="@+id/title"
+      android:background="@android:color/black"
+      >
+    <ImageButton
+      android:layout_width="25dp"
+      android:layout_height="25dp"
+      android:background="@mipmap/bt_time_set"
+      android:layout_centerInParent="true"
+      android:visibility="gone"
+      android:onClick="openSetDelayTimeTake"
+      android:id="@+id/bt_open_set_time"
+    />
+
+    <ImageButton
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_centerVertical="true"
+        android:background="@mipmap/bt_time_set_choose"
+        android:id="@+id/close_set_time_layout"
+        android:layout_marginLeft="10dp"
+        android:onClick="closeSetDelayTimeTake"
+        />
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="horizontal"
+      android:layout_toRightOf="@+id/close_set_time_layout"
+      android:layout_marginLeft="10dp"
+      android:id="@+id/set_time_layout"
+      >
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_weight="1"
+        android:text="关闭"
+        android:id="@+id/close_delay"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_weight="1"
+        android:text="3秒"
+        android:id="@+id/tv_3_delay"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_weight="1"
+        android:text="5秒"
+        android:id="@+id/tv_5_delay"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="10秒"
+        android:id="@+id/tv_10_delay"
+        />
+
+  </LinearLayout>
+  </RelativeLayout>
+
   <android.opengl.GLSurfaceView
       android:layout_width="1px"
       android:layout_height="1px"
       android:id="@+id/glSurfaceView"
-      android:layout_marginTop="20dp"
+      android:layout_below="@+id/title"
       />
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/takePhoto_bt"
-        android:onClick="takePhoto"
-        android:textAllCaps="false"
-        android:text="Take"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        />
-
   <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:background="@android:color/darker_gray"
-      android:text="切换相机"
-      android:onClick="changeCamera"
+      android:background="#00000000"
+      android:textSize="30dp"
+      android:layout_marginTop="5dp"
+      android:layout_marginRight="10dp"
+      android:layout_below="@+id/title"
+      android:layout_alignParentRight="true"
+      android:id="@+id/time_view"
       />
+
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_below="@+id/glSurfaceView"
+      android:background="@android:color/black"
+      >
+
+    <ImageButton
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:id="@+id/takePhoto_bt"
+        android:onClick="takePhoto"
+        android:background="@drawable/bt_take_photo"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="10dp"
+        />
+
+    <ImageButton
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/bt_change_camera"
+        android:onClick="changeCamera"
+        android:id="@+id/bt_change"
+        android:layout_toRightOf="@+id/takePhoto_bt"
+        android:layout_marginLeft="30dp"
+        android:layout_centerVertical="true"
+        />
+    <ImageButton
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/bt_choose_filter"
+        android:onClick="changeCamera"
+        android:id="@+id/bt_choose_filter"
+        android:layout_toRightOf="@+id/takePhoto_bt"
+        android:layout_marginLeft="80dp"
+        android:layout_centerVertical="true"
+        />
+
+  </RelativeLayout>
+
 
 </RelativeLayout>
