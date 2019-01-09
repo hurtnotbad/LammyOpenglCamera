@@ -3,6 +3,8 @@ package com.example.lammy.lammyopenglcamera.lyFilter;
 import android.content.Context;
 import android.opengl.GLES20;
 
+import com.example.lammy.lammyopenglcamera.Utils.LogUtil;
+
 import static android.opengl.GLES20.glGetAttribLocation;
 
 public class BeautyFilter extends LyFilter {
@@ -14,7 +16,7 @@ public class BeautyFilter extends LyFilter {
         super(context, vertexShaderAssetsPath, fragmentShaderAssetsPath);
     }
     public BeautyFilter(Context context) {
-        super(context, "lyfilter/beautyFilter/beauty.vert", "lyfilter/beautyFilter/beauty.frag");
+        super(context, "lyfilter/beautyFilter/beauty2.vert", "lyfilter/beautyFilter/beauty2.frag");
 
     }
 
@@ -31,17 +33,20 @@ public class BeautyFilter extends LyFilter {
         iternumLocation = GLES20.glGetUniformLocation(program, "iternum");
         aaCoefLocation = GLES20.glGetUniformLocation(program, "aaCoef");
         mixCoefLocation = GLES20.glGetUniformLocation(program, "mixCoef");
+
         setBeautyProgress(0);
     }
 
     @Override
     public void setOtherUniform() {
-
+        setBeautyProgress(progress);
     }
 
 
 
+    private int progress = 0;
     public void setBeautyProgress(int progress) {
+        this.progress = progress;
         switch (progress){
             case 1:
                 setBeautyProgress(1,0.19f,0.54f);
@@ -61,6 +66,9 @@ public class BeautyFilter extends LyFilter {
             case 6:
                 setBeautyProgress(4,0.19f,0.69f);
                 break;
+//            case 7:
+//                setBeautyProgress(5,0.3f,0.9f);
+//                break;
             default:
                 setBeautyProgress(0,0f,0f);
                 break;
@@ -68,7 +76,7 @@ public class BeautyFilter extends LyFilter {
     }
 
     private void setBeautyProgress(int iternum,float aaCoef,float mixCoef){
-        GLES20.glUniform1f(iternumLocation,iternum);
+        GLES20.glUniform1i(iternumLocation,iternum);
         GLES20.glUniform1f(aaCoefLocation,aaCoef);
         GLES20.glUniform1f(mixCoefLocation,mixCoef);
     }

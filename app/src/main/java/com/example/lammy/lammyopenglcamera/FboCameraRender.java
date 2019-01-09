@@ -130,7 +130,9 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
         brightFilter.setBrightness(0.2f);
 
         groupFilter.addFilter(zipPkmAnimationFilter);
-
+//        beautyFilter.setBeautyProgress(6);
+//        groupFilter.addFilter(beautyFilter);
+//        groupFilter.addFilter(grayFilter);
     }
 
 

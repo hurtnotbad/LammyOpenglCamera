@@ -286,7 +286,7 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                fboCameraRender.faceColorFilter.setIntensity(progress/100f);
-               fboCameraRender.beautyFilter.setBeautyProgress(5);
+               fboCameraRender.beautyFilter.setBeautyProgress(progress/20 + 1);
             }
 
             @Override
@@ -310,8 +310,8 @@ public class MainActivity extends AppCompatActivity{
                     }else if( state == 1){
                         fboCameraRender.removeAllFilter();
                         seekBar.setVisibility(View.VISIBLE);
-//                        fboCameraRender.addFilter(fboCameraRender.beautyFilter);
                         fboCameraRender.addFilter(fboCameraRender.faceColorFilter);
+                        fboCameraRender.addFilter(fboCameraRender.beautyFilter);
                     }
             }
         });

@@ -61,9 +61,6 @@ public class LyCameraRender implements GLSurfaceView.Renderer{
     public void onSurfaceChanged(GL10 gl, int width, int height) {
 
         glViewport(0, 0, width, height);
-        LogUtil.e("onSurfaceChanged w = " + width);
-        LogUtil.e("onSurfaceChanged height = " + height);
-
         cameraFilter.onSizeChanged(width , height);
     }
 
@@ -77,12 +74,10 @@ public class LyCameraRender implements GLSurfaceView.Renderer{
 
 
         noFilter.setTextureId(cameraFilter.getOutTextureId());
-        // 因为cameraFilter 是旋转90°的，因此这里其实是 x轴对换
         noFilter.flipY();
         noFilter.draw();
 
         grayFilter.setTextureId(cameraFilter.getOutTextureId());
-        // 因为cameraFilter 是旋转90°的，因此这里其实是 x轴对换
         grayFilter.flipY();
         grayFilter.draw();
 
