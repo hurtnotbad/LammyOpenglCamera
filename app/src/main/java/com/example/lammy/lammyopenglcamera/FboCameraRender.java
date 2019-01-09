@@ -2,7 +2,9 @@ package com.example.lammy.lammyopenglcamera;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.SurfaceTexture;
+import android.media.MediaScannerConnection;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Environment;
@@ -215,7 +217,6 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
     //图片保存
     public void saveBitmap(Bitmap b){
         String path = Environment.getExternalStorageDirectory().getAbsolutePath()+"/";
-
         File file = new File(path+"lammyPhoto");
         if(!file.exists()){
             file.mkdirs();
@@ -229,14 +230,33 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
             b.compress(Bitmap.CompressFormat.JPEG, 100, bos);
             bos.flush();
             bos.close();
+
+            // 通知图库
+            MediaScannerConnection.scanFile(context, new String[]{jpegName}, null, null);
+            lastImageTakenPath = jpegName;
+            if(onPhotoTakenListener != null){
+                onPhotoTakenListener.onPhotoTaken();
+            }
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
     }
+    private  onPhotoTakenListener onPhotoTakenListener;
+
+    public void setOnPhotoTakenListener(onPhotoTakenListener onPhotoTakenListener){
+        this.onPhotoTakenListener = onPhotoTakenListener;
+    }
+
+    private String lastImageTakenPath;
     public void takePhoto(){
         isShoot = true;
+    }
+
+
+    public String getLastImageTakenPath(){
+        return lastImageTakenPath;
     }
 
     private void deleteFrameBuffer() {
@@ -248,4 +268,10 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
         cameraInterface.changeCamera();
         cameraFilter.setCameraId(cameraInterface.getCameraId());
     }
+
+    interface onPhotoTakenListener{
+
+        void onPhotoTaken();
+    }
+
 }

@@ -1,7 +1,11 @@
 package com.example.lammy.lammyopenglcamera;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -13,6 +17,10 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.File;
+
+import static android.support.v4.content.FileProvider.getUriForFile;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -61,42 +69,76 @@ public class MainActivity extends AppCompatActivity{
         GLSurfaceView glSurfaceView = cameraView.findViewById(R.id.glSurfaceView);
         fboCameraRender = new FboCameraRender(this);
         fboCameraRender.setGlSurfaceView(glSurfaceView);
+        fboCameraRender.setOnPhotoTakenListener(onPhotoTakenListener);
         setContentView(cameraView);
         initView();
 
     }
 
+   static boolean isCancel = false;
+   static boolean isTaking = false;
     public void takePhoto(View view){
+        if(isTaking){
+            isCancel = true;
+            return;
+        }
+        isTaking = true;
+
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     final int second = (int)delayTime/1000;
                     for(int i = 0; i < second ; i ++){
+                        if(isCancel){
+                            break;
+                        }
                         final int finalI = i;
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 timeView.setText((second - finalI) +"");
+                                bt_takePhoto.setBackgroundResource(R.mipmap.cancel_take);
                             }
                         });
                         Thread.sleep(1000);
                     }
+
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             timeView.setText("");
+                            bt_takePhoto.setBackgroundResource(R.drawable.bt_take_photo);
                         }
                     });
 
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                fboCameraRender.takePhoto();
+                if(!isCancel) {
+                    fboCameraRender.takePhoto();
+                }
+                isTaking = false;
+                isCancel = false;
             }
         }).start();
 
     }
+    private Bitmap lastImageTaken;
+    private FboCameraRender.onPhotoTakenListener onPhotoTakenListener = new FboCameraRender.onPhotoTakenListener() {
+        @Override
+        public void onPhotoTaken() {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Bitmap bitmap  = BitmapFactory.decodeFile(fboCameraRender.getLastImageTakenPath());
+                    imageView.setImageBitmap(bitmap);
+
+                }
+            });
+        }
+    };
+
     public void changeCamera(View view){
         fboCameraRender.changeCamera();
     }
@@ -116,8 +158,6 @@ public class MainActivity extends AppCompatActivity{
             onDonePermissionGranted();
         }
     }
-
-
 
     long delayTime = 0;
     int chooseColor = 0x5CACEEff;
@@ -141,14 +181,17 @@ public class MainActivity extends AppCompatActivity{
     public void openSetDelayTimeTake(View view){
         openSetDelayTimeTake();
     }
-    ImageButton bt_closeSetTime,bt_openSetTime;
+    ImageButton bt_closeSetTime,bt_openSetTime,bt_takePhoto;
     LinearLayout setTimeLayout;
     TextView tv_closeDelay ,tv_3SecondDelay,tv_5SecondDelay,tv_10SecondDelay;
     TextView timeView;
     CircleImageView imageView;
     private void initView(){
 
+//        fboCameraRender.setOnPhotoTakenListener(onPhotoTakenListener);
         imageView = cameraView.findViewById(R.id.gallery);
+        bt_takePhoto = cameraView.findViewById(R.id.takePhoto_bt);
+
         setTimeLayout = cameraView.findViewById(R.id.set_time_layout);
         bt_closeSetTime = cameraView.findViewById(R.id.close_set_time_layout);
         bt_openSetTime = cameraView.findViewById(R.id.bt_open_set_time);
@@ -215,11 +258,89 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                File file = new File(fboCameraRender.getLastImageTakenPath());
+                Uri contentUri = getUriForFile(getApplicationContext(), "com.lammy.fileprovider", file);
+                // 这种绝对路径后去uri FileUriExposedException ，必须要用 file_provider的形式
+                //Uri contentUri = Uri.fromFile(file);
+              //打开指定的一张照片
+                Intent intent = new Intent();
+                intent.setAction(android.content.Intent.ACTION_VIEW);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                intent.setDataAndType(contentUri, "image/*");
+                startActivity(intent);
+            }
+        });
 
     }
 
 
 
 }
+/**
+ *
+ * 添加文件file_provider，来源：https://blog.csdn.net/shenwd_note/article/details/74278884
+ *
+ *
+ 1、 在AndroidManifest.xml中加上
+ <provider
+ android:name="android.support.v4.content.FileProvider"
+ android:authorities="com.mydomain.fileprovider"
+ android:exported="false"
+ android:grantUriPermissions="true">
+ <meta-data
+ android:name="android.support.FILE_PROVIDER_PATHS"
+ android:resource="@xml/file_provider_paths" />
+ </provider>
 
+ 2 、在res/xml 文件中创建file_provider_paths.xml 文件
+
+ <paths xmlns:android="http://schemas.android.com/apk/res/android">
+ <files-path name="my_images" path="images/"/>
+ </paths>
+
+ name为标识，file-path 表示前缀路径，path接着file-path 的路径
+
+ 内部的element可以是files-path，cache-path，external-path，external-files-path，external-cache-path
+ 分别对应Context.getFilesDir()，Context.getCacheDir()，Environment.getExternalStorageDirectory()，Context.getExternalFilesDir()，Context.getExternalCacheDir()等几个方法
+
+ 使用Uri
+
+ File imagePath = new File(Context.getFilesDir(), "images");
+ File newFile = new File(imagePath, "default_image.jpg");
+ Uri contentUri = getUriForFile(getContext(), "com.mydomain.fileprovider", newFile);
+
+ 以上是百度查的资料
+
+ 使用中遇到的问题又查了官网：
+
+ 加上provider 时不能build；需要在provider的meta-data中加上tools:replace="android:resource"，顶部加上xmlns:tools="http://schemas.android.com/tools"
+ <provider
+ android:name="android.support.v4.content.FileProvider"
+ android:authorities="com.shen.snote.fileprovider"
+ android:exported="false"
+ android:grantUriPermissions="true">
+ <meta-data
+ tools:replace="android:resource"
+ android:name="android.support.FILE_PROVIDER_PATHS"
+ android:resource="@xml/file_provider_paths" />
+ </provider>
+ 使用Uri时 日志显示权限拒绝，需要在使用时添加代码intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);或addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+ //打开指定的一张照片
+ Intent intent = new Intent();
+ intent.setAction(android.content.Intent.ACTION_VIEW);
+ intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+ intent.setDataAndType(uriForFile, "image/*");
+ startActivity(intent);
+ ---------------------
+ 作者：ShenWandong
+ 来源：CSDN
+ 原文：https://blog.csdn.net/shenwd_note/article/details/74278884
+ 版权声明：本文为博主原创文章，转载请附上博文链接！
+
+ *
+ */
 
