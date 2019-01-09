@@ -24,7 +24,9 @@ public class GroupFilter {
     public void addFilter(LyFilter lyFilter){
         lyFilters.add(lyFilter);
     }
-
+    public void removeAllFilter(){
+        lyFilters.clear();
+    }
     private int textureIndex=0;
     public void draw(){
 

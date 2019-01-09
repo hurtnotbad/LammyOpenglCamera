@@ -86,76 +86,71 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
     }
 
 
-    private CameraFilter cameraFilter;
-    private GrayFilter grayFilter;
-    private GroupFilter groupFilter;
-    private LyFilter showFilter;
-    private FaceColorFilter faceColorFilter;
-    private BeautyFilter beautyFilter;
-    private MagnifierFilter magnifierFilter;
-    private ZipPkmAnimationFilter zipPkmAnimationFilter;
+
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-
-        setFilter();
-//        cameraFilter = new CameraFilter(context);
-//        mSurfaceTexture = cameraFilter.getmSurfaceTexture();
-//        cameraInterface.setSurfaceTexture(mSurfaceTexture);
-//        cameraInterface.openCamera();
-//        cameraFilter.setCameraId(cameraInterface.getCameraId());
-//
-//        noFilter = new NoFilter(context);
-//        grayFilter = new GrayFilter(context);
-//        faceColorFilter = new FaceColorFilter(context);
-//        faceColorFilter.setIntensity(1f);
-//        beautyFilter = new BeautyFilter(context);
-//        beautyFilter.setBeautyProgress(3);
-//        magnifierFilter = new MagnifierFilter(context);
-//        magnifierFilter.setCenterPoint(new float[]{0.6f,0.5f});
-//        magnifierFilter.setOpinionSize(2f);
-//        magnifierFilter.setR(0.3f);
-//        zipPkmAnimationFilter=new ZipPkmAnimationFilter(context);
-//
-//        BrightFilter brightFilter = new BrightFilter(context);
-//        brightFilter.setBrightness(0.2f);
-//
-//
-//        groupFilter = new GroupFilter(cameraFilter);
-////        groupFilter.addFilter(noFilter);
-////        groupFilter.addFilter(grayFilter);
-////        groupFilter.addFilter(faceColorFilter);
-////        groupFilter.addFilter(beautyFilter);
-////        groupFilter.addFilter(magnifierFilter);
-////        groupFilter.addFilter(zipPkmAnimationFilter);
-//        groupFilter.addFilter(brightFilter);
-
-        showFilter = new NoFilter(context);
-
-    }
-
-
-
-    public void setFilter(){
-        cameraFilter = new CameraFilter(context);
+        initFilter();
         mSurfaceTexture = cameraFilter.getmSurfaceTexture();
         cameraInterface.setSurfaceTexture(mSurfaceTexture);
         cameraInterface.openCamera();
         cameraFilter.setCameraId(cameraInterface.getCameraId());
+    }
+
+
+    public CameraFilter cameraFilter;
+    public GrayFilter grayFilter;
+    public GroupFilter groupFilter;
+    public LyFilter showFilter;
+    public FaceColorFilter faceColorFilter;
+    public BeautyFilter beautyFilter;
+    public MagnifierFilter magnifierFilter;
+    public ZipPkmAnimationFilter zipPkmAnimationFilter;
+    public BrightFilter brightFilter;
+    private void initFilter(){
+        cameraFilter = new CameraFilter(context);
+        showFilter = new NoFilter(context);
 
         groupFilter = new GroupFilter(cameraFilter);
-//        groupFilter.addFilter(new GrayFilter(context));
-        groupFilter.addFilter(new ZipPkmAnimationFilter(context));
-        BrightFilter brightFilter = new BrightFilter(context);
+
+
+        beautyFilter = new BeautyFilter(context);
+//        beautyFilter.setBeautyProgress(3);
+        faceColorFilter = new FaceColorFilter(context);
+//        faceColorFilter.setIntensity(0.5f);
+
+        grayFilter = new GrayFilter(context);
+
+        magnifierFilter = new MagnifierFilter(context);
+        magnifierFilter.setCenterPoint(new float[]{0.6f,0.5f});
+        magnifierFilter.setOpinionSize(2f);
+        magnifierFilter.setR(0.3f);
+
+        zipPkmAnimationFilter=new ZipPkmAnimationFilter(context);
+        brightFilter = new BrightFilter(context);
         brightFilter.setBrightness(0.2f);
-        groupFilter.addFilter(brightFilter);
+
+        groupFilter.addFilter(zipPkmAnimationFilter);
+
     }
 
 
 
+
+    public void addFilter(LyFilter lyFilter){
+        if(groupFilter!=null) {
+            groupFilter.addFilter(lyFilter);
+        }
+    }
+
+    public void removeAllFilter(){
+        if(groupFilter!=null) {
+            groupFilter.removeAllFilter();
+        }
+    }
+
+
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-
-
         glViewport(0, 0, width, height);
 
         if(groupFilter == null){

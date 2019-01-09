@@ -98,6 +98,13 @@
       android:layout_alignParentRight="true"
       android:id="@+id/time_view"
       />
+  <android.support.v7.widget.AppCompatSeekBar
+      android:layout_width="match_parent"
+      android:layout_height="35dp"
+      android:layout_alignBottom="@+id/glSurfaceView"
+      android:layout_marginBottom="20dp"
+      android:id="@+id/beauty_seek_bar"
+      />
 
   <RelativeLayout
       android:layout_width="match_parent"
@@ -105,6 +112,15 @@
       android:layout_below="@+id/glSurfaceView"
       android:background="@android:color/black"
       >
+    <com.example.lammy.lammyopenglcamera.ChooseView
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:background="@android:color/black"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/choose_view"
+
+        />
+
 
     <com.example.lammy.lammyopenglcamera.CircleImageView
         android:layout_width="60dp"

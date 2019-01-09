@@ -15,8 +15,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.lammy.lammyopenglcamera.lyFilter.BeautyFilter;
+import com.example.lammy.lammyopenglcamera.lyFilter.FaceColorFilter;
 
 import java.io.File;
 
@@ -272,6 +276,43 @@ public class MainActivity extends AppCompatActivity{
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 intent.setDataAndType(contentUri, "image/*");
                 startActivity(intent);
+            }
+        });
+
+        final ChooseView chooseView = cameraView.findViewById(R.id.choose_view);
+        final SeekBar seekBar = cameraView.findViewById(R.id.beauty_seek_bar);
+        seekBar.setVisibility(View.INVISIBLE);
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+               fboCameraRender.faceColorFilter.setIntensity(progress/100f);
+               fboCameraRender.beautyFilter.setBeautyProgress(5);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        chooseView.setOnStateChangeListener(new ChooseView.OnStateChangeListener() {
+            @Override
+            public void onStateChange() {
+                    int state = chooseView.getState();
+                    if(state == 0){
+                        seekBar.setVisibility(View.INVISIBLE);
+                        fboCameraRender.removeAllFilter();
+                    }else if( state == 1){
+                        fboCameraRender.removeAllFilter();
+                        seekBar.setVisibility(View.VISIBLE);
+//                        fboCameraRender.addFilter(fboCameraRender.beautyFilter);
+                        fboCameraRender.addFilter(fboCameraRender.faceColorFilter);
+                    }
             }
         });
 
