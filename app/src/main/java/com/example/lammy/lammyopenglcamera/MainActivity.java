@@ -266,7 +266,11 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
 
-                File file = new File(fboCameraRender.getLastImageTakenPath());
+                String path = fboCameraRender.getLastImageTakenPath();
+                if(path==null){
+                    return;
+                }
+                File file = new File(path);
                 Uri contentUri = getUriForFile(getApplicationContext(), "com.lammy.fileprovider", file);
                 // 这种绝对路径后去uri FileUriExposedException ，必须要用 file_provider的形式
                 //Uri contentUri = Uri.fromFile(file);
