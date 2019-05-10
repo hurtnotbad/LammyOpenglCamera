@@ -53,8 +53,8 @@ public class CameraView extends RelativeLayout {
         if(previewSize.getWidth()==0||previewSize.getHeight()==0){
             previewSize =CameraInterface.getCameraViewSize(this.getContext());
             RelativeLayout.LayoutParams  lp = (LayoutParams) glSurfaceView.getLayoutParams();
-            lp.width *=previewSize.getWidth();
-            lp.height *=previewSize.getHeight();
+            lp.width =previewSize.getWidth();
+            lp.height =previewSize.getHeight();
             glSurfaceView.setLayoutParams(lp);
 
 //            glSurfaceView.layout(0,0,previewSize.getWidth(),previewSize.getHeight());
