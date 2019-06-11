@@ -6,6 +6,8 @@ public class FBOHelper {
 
     //创建FrameBuffer
     public static boolean createFrameBuffer(int width, int height,int[]fFrame, int[] fRender, int[] fTexture) {
+        deleteFrameBuffer(fRender, fFrame, fTexture);
+
         GLES20.glGenFramebuffers(1, fFrame, 0);
         GLES20.glGenRenderbuffers(1, fRender, 0);
 
@@ -43,8 +45,11 @@ public class FBOHelper {
     }
 
     public static void deleteFrameBuffer(int[] fRender, int[] fFrame, int[] fTexture) {
-        GLES20.glDeleteRenderbuffers(1, fRender, 0);
-        GLES20.glDeleteFramebuffers(1, fFrame, 0);
-        GLES20.glDeleteTextures(1, fTexture, 0);
+        GLES20.glDeleteRenderbuffers(fRender.length, fRender, 0);
+        GLES20.glDeleteFramebuffers(fFrame.length, fFrame, 0);
+        GLES20.glDeleteTextures(fTexture.length, fTexture, 0);
     }
+
+
+
 }

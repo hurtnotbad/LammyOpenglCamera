@@ -103,7 +103,7 @@ public  class CameraFilter {
             LogUtil.e("width = " + width);
             LogUtil.e("height = " + height);
             //创建FrameBuffer和Texture
-            deleteFrameBuffer();
+            //deleteFrameBuffer();
            // GLES20.glGenFramebuffers(1, fFrame, 0);
             FBOHelper.createFrameBuffer(width, height, fFrame, fRender,outTextureId);
             //TextureHelper.genTexturesWithParameter(1, outTextureId,0,GLES20.GL_RGBA,width,height);
@@ -304,11 +304,6 @@ public  class CameraFilter {
         mSurfaceTexture=new SurfaceTexture(textureId[0]);
     }
 
-    //取消绑定Texture
-    private void unBindFrame() {
-        GLES20.glBindRenderbuffer(GLES20.GL_RENDERBUFFER, 0);
-        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
-    }
 
 
     private void deleteFrameBuffer() {
