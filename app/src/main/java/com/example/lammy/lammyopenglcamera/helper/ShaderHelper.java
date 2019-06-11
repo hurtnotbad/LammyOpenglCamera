@@ -32,6 +32,8 @@ import static android.opengl.GLES20.glValidateProgram;
 
 
 public class ShaderHelper {
+
+    // 读取raw文件下shader文件为string
     public static String readTextFileFromResourceRaw(Context context , int resourceId){
         StringBuilder body = new StringBuilder();
         try{
@@ -48,7 +50,7 @@ public class ShaderHelper {
         }
         return body.toString();
     }
-
+    // 读取assets文件下shader文件为string
     public static String readTextFileFromResourceAssets(Context context , String assetsPath){
         StringBuilder body = new StringBuilder();
         try{
@@ -65,7 +67,7 @@ public class ShaderHelper {
         }
         return body.toString();
     }
-
+    // 读取assets文件下shader文件为string
     public static String uRes(Resources mRes, String path){
         StringBuilder result=new StringBuilder();
         try{

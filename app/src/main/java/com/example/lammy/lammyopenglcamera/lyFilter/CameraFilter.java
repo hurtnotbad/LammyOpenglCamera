@@ -10,7 +10,9 @@ import com.example.lammy.lammyopenglcamera.Utils.BufferUtil;
 import com.example.lammy.lammyopenglcamera.Utils.EasyGlUtils;
 import com.example.lammy.lammyopenglcamera.Utils.LogUtil;
 import com.example.lammy.lammyopenglcamera.Utils.MatrixUtils;
+import com.example.lammy.lammyopenglcamera.helper.FBOHelper;
 import com.example.lammy.lammyopenglcamera.helper.ShaderHelper;
+import com.example.lammy.lammyopenglcamera.helper.TextureHelper;
 
 
 import java.nio.FloatBuffer;
@@ -23,7 +25,6 @@ public  class CameraFilter {
 
 
     private static final String TAG="CameraFilter";
-
 
     public CameraFilter(Context context , int  vertexShaderRawId, int  fragmentShaderRawId){
         String vertexShaderString = ShaderHelper.readTextFileFromResourceRaw(context ,vertexShaderRawId );
@@ -43,8 +44,6 @@ public  class CameraFilter {
     public CameraFilter(Context context){
         String vertexShaderString = ShaderHelper.readTextFileFromResourceAssets(context ,"lyfilter/cameraFilter/no_filter_vertex_shader.glsl" );
         String fragmentShaderString = ShaderHelper.readTextFileFromResourceAssets(context ,"lyfilter/cameraFilter/no_filter_fragment_shader.glsl" );
-//        String vertexShaderString = ShaderHelper.readTextFileFromResourceAssets(context ,"lyfilter/grayFilter/gray_filter_vertex_shader.glsl" );
-//        String fragmentShaderString = ShaderHelper.readTextFileFromResourceAssets(context ,"lyfilter/grayFilter/gray_filter_fragment_shader.glsl" );
         program = ShaderHelper.buildProgram(vertexShaderString, fragmentShaderString);
         initUniforms();
     }
@@ -66,49 +65,34 @@ public  class CameraFilter {
             1.0f,  -1.0f,
     };
 
-    //纹理坐标
-    private float[] coordCameraBack={
-            0.0f, 0.0f,
-            0.0f,  1.0f,
-            1.0f,  0.0f,
-            1.0f, 1.0f,
-    };
-    //纹理 左右相反
     private float[] coordCameraFront={
-            1.0f, 0.0f,
-            1.0f,  1.0f,
-            0.0f,  0.0f,
-            0.0f, 1.0f,
+            1f,1f,
+            0f,1f,
+            1f,0f,
+            0f,0f
     };
-
-//    // 如果用下面纹理映射，则render 种不需要旋转90°，因为相机获得数据是旋转90°的，因此只需在此对应点旋转 90就是 顺时针移动一位
-//    private float[] coord={
-//            0f,1f,
-//            1f,1f,
-//            0f,0f,
-//            1f,0f
-//    };
-
+    private float[] coordCameraBack={
+            0f,1f,
+            1f,1f,
+            0f,0f,
+            1f,0f
+    };
 
     private int vPositionLocation;
     private int vTextureCoordinateLocation;
     private int vTextureLocation;
-    private int vMatrixLocation;
 
 
     private void initUniforms() {
         vPositionLocation = glGetAttribLocation(program , "vPosition");
         vTextureCoordinateLocation = glGetAttribLocation(program , "inputTextureCoordinate");
         vTextureLocation = GLES20.glGetUniformLocation(program, "vTexture");
-        vMatrixLocation =  GLES20.glGetUniformLocation(program, "vMatrix");
-
         onCreate();
     }
+
     protected void setUniforms() {
-        GLES20.glUniformMatrix4fv(vMatrixLocation, 1, false, pointsMatrix, 0);
         GLES20.glVertexAttribPointer(vPositionLocation, 2, GLES20.GL_FLOAT, false, 8, vPositionBuffer);
         GLES20.glVertexAttribPointer(vTextureCoordinateLocation, 2, GLES20.GL_FLOAT, false, 8,vTextureCoordinateBuffer );
-
 
     }
 
@@ -120,8 +104,10 @@ public  class CameraFilter {
             LogUtil.e("height = " + height);
             //创建FrameBuffer和Texture
             deleteFrameBuffer();
-            GLES20.glGenFramebuffers(1, fFrame, 0);
-            EasyGlUtils.genTexturesWithParameter(1, outTextureId,0,GLES20.GL_RGBA,width,height);
+           // GLES20.glGenFramebuffers(1, fFrame, 0);
+            FBOHelper.createFrameBuffer(width, height, fFrame, fRender,outTextureId);
+            //TextureHelper.genTexturesWithParameter(1, outTextureId,0,GLES20.GL_RGBA,width,height);
+
         }
     }
 
@@ -131,7 +117,6 @@ public  class CameraFilter {
      */
     int index= 0;
     public void draw(){
-
         // 在切换相机的时候，切换的瞬间容易看到，纹理映射，旋转前的图像，因此，卡顿21帧不绘制
         if(isChangeCamera){
             if(index > 40){
@@ -141,8 +126,6 @@ public  class CameraFilter {
                 index ++;
                 return;
             }
-
-
         }
 
 
@@ -153,11 +136,9 @@ public  class CameraFilter {
 
         if(mSurfaceTexture!=null){
             mSurfaceTexture.updateTexImage();
-//            mSurfaceTexture.getTransformMatrix(mCoordOM);
-//            mFilter.setCoordMatrix(mCoordOM);
         }
 
-        EasyGlUtils.bindFrameTexture(fFrame[0],outTextureId[0]);
+        FBOHelper.bindFrameTexture(fFrame[0],outTextureId[0],fRender[0]);
 
 
 //        //6. 检测是否绑定从成功
@@ -168,7 +149,7 @@ public  class CameraFilter {
 //        }
 
         OnDraw();
-        EasyGlUtils.unBindFrameBuffer();
+        FBOHelper.unBindFrameBuffer();
 
         if(a){
             GLES20.glEnable(GLES20.GL_DEPTH_TEST);
@@ -191,7 +172,6 @@ public  class CameraFilter {
 
     private FloatBuffer vPositionBuffer =  BufferUtil.floatToBuffer(pos);
     private FloatBuffer vTextureCoordinateBuffer;
-    private float[] pointsMatrix = get90RotationMatrix();// MatrixUtils.getOriginalMatrix();
     private int width , height;
     private SurfaceTexture mSurfaceTexture;
 
@@ -265,16 +245,13 @@ public  class CameraFilter {
      * 绑定默认纹理
      */
     private int fFrame[] = new int[1];
+    private int[] fRender = new int[1];
     private int textureId[] = new int[1];
     private int outTextureId[] = new int[1];
 
     public int getOutTextureId(){
         return outTextureId[0];
 }
-    public float[] getPointsMatrix(){
-        return pointsMatrix;
-    }
-
 
     private String cameraId = "0";
     public String getCameraId() {
@@ -313,7 +290,6 @@ public  class CameraFilter {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
     }
 
-
     public void deleteProgram() {
         GLES20.glDeleteProgram(program);
     }
@@ -327,8 +303,6 @@ public  class CameraFilter {
         createOesTexture();
         mSurfaceTexture=new SurfaceTexture(textureId[0]);
     }
-
-
 
     //取消绑定Texture
     private void unBindFrame() {
