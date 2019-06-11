@@ -6,7 +6,7 @@ import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
 
-import com.example.lammy.lammyopenglcamera.Utils.EasyGlUtils;
+import com.example.lammy.lammyopenglcamera.helper.TextureHelper;
 
 
 import java.io.IOException;
@@ -34,7 +34,7 @@ public class FaceColorFilter extends LyFilter {
         }
         // 之前在initUniforms 中调用maskTextures ，发现 maskTextures 为空，原因在于
         // initUniforms是 重写父类方法，initUniforms在父类初始化中调用，此时maskTextures为空，子类未创建
-        EasyGlUtils.genTexturesWithParameter(1,maskTextures,0, GLES20.GL_RGBA,512,512);
+        TextureHelper.genTexturesWithParameter(1,maskTextures,0, GLES20.GL_RGBA,512,512);
     }
 
 

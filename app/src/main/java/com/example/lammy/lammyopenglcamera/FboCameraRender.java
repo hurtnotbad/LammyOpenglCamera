@@ -14,9 +14,11 @@ import android.util.Size;
 import android.view.SurfaceHolder;
 import android.widget.RelativeLayout;
 
-import com.example.lammy.lammyopenglcamera.Utils.EasyGlUtils;
+
 import com.example.lammy.lammyopenglcamera.Utils.LogUtil;
 import com.example.lammy.lammyopenglcamera.Utils.MatrixUtils;
+import com.example.lammy.lammyopenglcamera.helper.FBOHelper;
+import com.example.lammy.lammyopenglcamera.helper.TextureHelper;
 import com.example.lammy.lammyopenglcamera.lyFilter.BeautyFilter;
 import com.example.lammy.lammyopenglcamera.lyFilter.BrightFilter;
 import com.example.lammy.lammyopenglcamera.lyFilter.CameraFilter;
@@ -162,7 +164,7 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
         groupFilter.onSizeChanged(width, height);
         deleteFrameBuffer();
         GLES20.glGenFramebuffers(1,mExportFrame,0);
-        EasyGlUtils.genTexturesWithParameter(1,mExportTexture,0,GLES20.GL_RGBA,width, height);
+        TextureHelper.genTexturesWithParameter(1,mExportTexture,0,GLES20.GL_RGBA,width, height);
     }
 
 
@@ -179,6 +181,7 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
     private boolean isShoot = false;
     //创建离屏buffer，用于最后导出数据
     private int[] mExportFrame = new int[1];
+    private int[] mExportRender = new int[1];
     private int[] mExportTexture = new int[1];
     private void callbackIfNeeded() {
         if ( isShoot) {
@@ -186,7 +189,7 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
             int height = cameraFilter.getHeight();
             ByteBuffer data = ByteBuffer.allocate(width * height*4);
             GLES20.glViewport(0, 0, width,height);
-            EasyGlUtils.bindFrameTexture(mExportFrame[0],mExportTexture[0]);
+            FBOHelper.bindFrameTexture(mExportFrame[0],mExportTexture[0], mExportRender[0]);
 
             // showFilter 绘制了一次了，已经正了，所以 矩阵得 置为单位矩阵
             showFilter.setPointsMatrix(MatrixUtils.getOriginalMatrix());
@@ -194,7 +197,7 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
             GLES20.glReadPixels(0, 0, width, height, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, data);
             onFrame(data.array() ,width,height ,0);
             isShoot = false;
-            EasyGlUtils.unBindFrameBuffer();
+            FBOHelper.unBindFrameBuffer();
             // 保存了图片 恢复反转
             showFilter.flipY();
         }

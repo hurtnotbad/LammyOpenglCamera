@@ -7,12 +7,10 @@ import android.opengl.GLES20;
 import android.opengl.Matrix;
 
 import com.example.lammy.lammyopenglcamera.Utils.BufferUtil;
-import com.example.lammy.lammyopenglcamera.Utils.EasyGlUtils;
 import com.example.lammy.lammyopenglcamera.Utils.LogUtil;
 import com.example.lammy.lammyopenglcamera.Utils.MatrixUtils;
 import com.example.lammy.lammyopenglcamera.helper.FBOHelper;
 import com.example.lammy.lammyopenglcamera.helper.ShaderHelper;
-import com.example.lammy.lammyopenglcamera.helper.TextureHelper;
 
 
 import java.nio.FloatBuffer;
