@@ -37,20 +37,20 @@ public class GroupFilter {
         cameraFilter.draw();
 
         textureIndex=0;
-        for(LyFilter filter:lyFilters){
+        synchronized (GroupFilter.class) {
+            for (LyFilter filter : lyFilters) {
 
-            FBOHelper.bindFrameTexture(fFrame[0], fTexture[textureIndex%2], fRender[0]);
-            if(textureIndex ==0){
-                filter.setTextureId(cameraFilter.getOutTextureId());
-            }else{
-                filter.setTextureId(fTexture[(textureIndex - 1)%2]);
-            }
-                // 因为绘制到buffer，会导致
-                filter.onSizeChanged(width , height);
-//                filter.flipY();
+                FBOHelper.bindFrameTexture(fFrame[0], fTexture[textureIndex % 2], fRender[0]);
+                if (textureIndex == 0) {
+                    filter.setTextureId(cameraFilter.getOutTextureId());
+                } else {
+                    filter.setTextureId(fTexture[(textureIndex - 1) % 2]);
+                }
+                filter.onSizeChanged(width, height);
                 filter.draw();
                 FBOHelper.unBindFrameBuffer();
                 textureIndex++;
+            }
         }
 
     }

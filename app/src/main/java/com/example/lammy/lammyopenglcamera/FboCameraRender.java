@@ -111,7 +111,6 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
     private void initFilter(){
         cameraFilter = new CameraFilter(context);
         showFilter = new NoFilter(context);
-
         groupFilter = new GroupFilter(cameraFilter);
 
 
@@ -172,9 +171,8 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 gl) {
         groupFilter.draw();
         showFilter.setTextureId(groupFilter.getOutTexture());
-        //showFilter.flipY();
         showFilter.draw();
-       // callbackIfNeeded();
+        callbackIfNeeded();
     }
 
 
@@ -189,17 +187,17 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
             int height = cameraFilter.getHeight();
             ByteBuffer data = ByteBuffer.allocate(width * height*4);
             GLES20.glViewport(0, 0, width,height);
-            FBOHelper.bindFrameTexture(mExportFrame[0],mExportTexture[0], mExportRender[0]);
 
-            // showFilter 绘制了一次了，已经正了，所以 矩阵得 置为单位矩阵
-            showFilter.setPointsMatrix(MatrixUtils.getOriginalMatrix());
+            FBOHelper.bindFrameTexture(mExportFrame[0],mExportTexture[0], mExportRender[0]);
+            // 因为纹理坐标 和 图片 坐标是山下颠倒得，因此保存图片得时候，得上下颠倒后保存
+            showFilter.flipY();
             showFilter.draw();
             GLES20.glReadPixels(0, 0, width, height, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, data);
             onFrame(data.array() ,width,height ,0);
             isShoot = false;
             FBOHelper.unBindFrameBuffer();
             // 保存了图片 恢复反转
-//            showFilter.flipY();
+            showFilter.setPointsMatrix(MatrixUtils.getOriginalMatrix());
         }
     }
     public void onFrame(final byte[] bytes, final int width, final int height , long time) {

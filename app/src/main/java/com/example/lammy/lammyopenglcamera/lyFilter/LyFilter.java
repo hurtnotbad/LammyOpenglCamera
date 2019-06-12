@@ -162,14 +162,14 @@ public abstract class LyFilter {
 
     public abstract void setOtherUniform();
 
-//    public void flipYPointsMatrix(){
-//        MatrixUtils.flip(pointsMatrix,false,true);
-//    }
-//    public void flipY(){
-//        float[] c  = MatrixUtils.getOriginalMatrix();
-//        MatrixUtils.flip(c,false,true);
-//        setPointsMatrix(c);
-//    }
+    public void flipYPointsMatrix(){
+        MatrixUtils.flip(pointsMatrix,false,true);
+    }
+    public void flipY(){
+        float[] c  = MatrixUtils.getOriginalMatrix();
+        MatrixUtils.flip(c,false,true);
+        setPointsMatrix(c);
+    }
 
     public void setPointsMatrix(float[] projectMatrix) {
         this.pointsMatrix = projectMatrix;

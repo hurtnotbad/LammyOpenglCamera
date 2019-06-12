@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.lammy.lammyopenglcamera.lyFilter.BeautyFilter;
 import com.example.lammy.lammyopenglcamera.lyFilter.FaceColorFilter;
+import com.example.lammy.lammyopenglcamera.lyFilter.GroupFilter;
 
 import java.io.File;
 
@@ -308,15 +309,19 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onStateChange() {
                     int state = chooseView.getState();
-                    if(state == 0){
+                synchronized (GroupFilter.class) {
+                    if (state == 0) {
                         seekBar.setVisibility(View.INVISIBLE);
                         fboCameraRender.removeAllFilter();
-                    }else if( state == 1){
+                        fboCameraRender.addFilter(fboCameraRender.zipPkmAnimationFilter);
+                    } else if (state == 1) {
                         fboCameraRender.removeAllFilter();
                         seekBar.setVisibility(View.VISIBLE);
+                        fboCameraRender.addFilter(fboCameraRender.zipPkmAnimationFilter);
                         fboCameraRender.addFilter(fboCameraRender.faceColorFilter);
                         fboCameraRender.addFilter(fboCameraRender.beautyFilter);
                     }
+                }
             }
         });
 
