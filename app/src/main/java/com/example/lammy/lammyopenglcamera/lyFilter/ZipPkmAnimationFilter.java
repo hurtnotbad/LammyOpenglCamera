@@ -15,6 +15,7 @@ import com.example.lammy.lammyopenglcamera.Utils.ZipPkmReader;
 
 import java.nio.ByteBuffer;
 
+import static android.opengl.GLES20.glEnableVertexAttribArray;
 
 
 /**
@@ -108,9 +109,7 @@ public class ZipPkmAnimationFilter extends LyFilter {
     public void initUniforms() {
         vPositionLocation= GLES20.glGetAttribLocation(program, "vPosition");
         vTextureCoordinateLocation=GLES20.glGetAttribLocation(program,"vCoord");
-        vMatrixLocation=GLES20.glGetUniformLocation(program,"vMatrix");
         vTextureLocation=GLES20.glGetUniformLocation(program,"vTexture");
-
     }
 
     @Override
@@ -118,19 +117,23 @@ public class ZipPkmAnimationFilter extends LyFilter {
         mGlHAlpha= GLES20.glGetUniformLocation(program,"vTextureAlpha");
     }
 
+    public void flipYPointsMatrix(){
+        pointsMatrix = MatrixUtils.flip(pointsMatrix,false,true);
+    }
+
+
     @Override
     public void draw() {
         if(getTextureId()!=0){
+            // 绘制 相机数据
             mBaseFilter.setTextureId(getTextureId());
-            mBaseFilter.setPointsMatrix(pointsMatrix);
             mBaseFilter.draw();
         }
-        GLES20.glViewport(0 ,height/6 *5,width/6,height/6);
 
-        // 动画生成纹理，在制作的时候就已经是flipY的，因此其实这里不需要flipY,但是添加到groupFilter的时候在调用draw之前，已经flipY了，然后现在 2次调用flipY根本没有区别，除非在
-        //本来的pointMatrix 下再flipY，因此这里调用flipYPointsMatrix
-//        LogUtil.e("pointsMatrix = " +Arrays.toString(  pointsMatrix));
-        flipYPointsMatrix();
+        GLES20.glViewport(0 ,height/6 *5,width/6,height/6);
+        // 在draw里不能改变矩阵，否则会不断叠加（draw在绘制得过程中会不断执行），导致绘制正反2个，不过也产生了一个特效
+        // 不过为了减少运算量。特别是矩阵得运算，其实可以提高程序运行，因此，可以直接在着色器中去完成 乘以矩阵后得结果
+        //flipYPointsMatrix();
         super.draw();
         GLES20.glViewport(0,0,width,height);
     }

@@ -172,9 +172,9 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 gl) {
         groupFilter.draw();
         showFilter.setTextureId(groupFilter.getOutTexture());
-        showFilter.flipY();
+        //showFilter.flipY();
         showFilter.draw();
-        callbackIfNeeded();
+       // callbackIfNeeded();
     }
 
 
@@ -199,7 +199,7 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
             isShoot = false;
             FBOHelper.unBindFrameBuffer();
             // 保存了图片 恢复反转
-            showFilter.flipY();
+//            showFilter.flipY();
         }
     }
     public void onFrame(final byte[] bytes, final int width, final int height , long time) {

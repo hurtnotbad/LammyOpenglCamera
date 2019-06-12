@@ -47,7 +47,7 @@ public class GroupFilter {
             }
                 // 因为绘制到buffer，会导致
                 filter.onSizeChanged(width , height);
-                filter.flipY();
+//                filter.flipY();
                 filter.draw();
                 FBOHelper.unBindFrameBuffer();
                 textureIndex++;

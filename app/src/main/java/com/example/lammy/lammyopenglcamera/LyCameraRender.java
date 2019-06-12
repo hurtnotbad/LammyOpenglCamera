@@ -74,11 +74,11 @@ public class LyCameraRender implements GLSurfaceView.Renderer{
 
 
         noFilter.setTextureId(cameraFilter.getOutTextureId());
-        noFilter.flipY();
+        //noFilter.flipY();
         noFilter.draw();
 
         grayFilter.setTextureId(cameraFilter.getOutTextureId());
-        grayFilter.flipY();
+       // grayFilter.flipY();
         grayFilter.draw();
 
 

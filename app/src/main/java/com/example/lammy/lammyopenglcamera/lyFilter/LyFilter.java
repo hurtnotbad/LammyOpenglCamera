@@ -4,6 +4,7 @@ import android.content.Context;
 import android.opengl.GLES20;
 
 import com.example.lammy.lammyopenglcamera.Utils.BufferUtil;
+import com.example.lammy.lammyopenglcamera.Utils.Gl2Utils;
 import com.example.lammy.lammyopenglcamera.Utils.LogUtil;
 import com.example.lammy.lammyopenglcamera.Utils.MatrixUtils;
 import com.example.lammy.lammyopenglcamera.helper.ShaderHelper;
@@ -12,7 +13,6 @@ import com.example.lammy.lammyopenglcamera.helper.ShaderHelper;
 import java.nio.FloatBuffer;
 
 import static android.opengl.GLES20.glEnableVertexAttribArray;
-import static android.opengl.GLES20.glViewport;
 
 public abstract class LyFilter {
 
@@ -39,12 +39,12 @@ public abstract class LyFilter {
             1.0f,  -1.0f,
     };
 
-
+    // 因为 fbo，cameraFilter中 将纹理映射已经正确，因此这里可以 正确的一一对应即可
     public float coor[] = {
-            0.0f , 0.0f,
             0.0f , 1.0f,
-            1.0f , 0.0f,
-            1.0f , 1.0f
+            0.0f , 0.0f,
+            1.0f , 1.0f,
+            1.0f , 0.0f
     };
 
     public Context context;
@@ -65,15 +65,6 @@ public abstract class LyFilter {
         initUniforms();
     }
 
-
-
-
-
-//    private int  width, height;
-//    public void setSize(int width , int height){
-//        this.width = width;
-//        this.height = height;
-//    }
 
     protected void onUseProgram(){
         GLES20.glUseProgram(program);
@@ -171,14 +162,14 @@ public abstract class LyFilter {
 
     public abstract void setOtherUniform();
 
-    public void flipYPointsMatrix(){
-        MatrixUtils.flip(pointsMatrix,false,true);
-    }
-    public void flipY(){
-        float[] c  = MatrixUtils.getOriginalMatrix();
-        MatrixUtils.flip(c,false,true);
-        setPointsMatrix(c);
-    }
+//    public void flipYPointsMatrix(){
+//        MatrixUtils.flip(pointsMatrix,false,true);
+//    }
+//    public void flipY(){
+//        float[] c  = MatrixUtils.getOriginalMatrix();
+//        MatrixUtils.flip(c,false,true);
+//        setPointsMatrix(c);
+//    }
 
     public void setPointsMatrix(float[] projectMatrix) {
         this.pointsMatrix = projectMatrix;
@@ -195,11 +186,6 @@ public abstract class LyFilter {
         this.width =width;
         this.height = height;
     }
-
-//    private void setTextureCoordinateBuffer(FloatBuffer vTextureCoordinateBuffer){
-//        vTextureCoordinateBuffer.position(0);
-//        this.vTextureCoordinateBuffer = vTextureCoordinateBuffer;
-//    }
 
 
     public void draw(){
