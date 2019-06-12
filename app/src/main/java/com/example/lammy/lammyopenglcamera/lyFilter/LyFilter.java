@@ -203,6 +203,21 @@ public abstract class LyFilter {
         GLES20.glDisableVertexAttribArray(vTextureCoordinateLocation);
     }
 
+    public void drawNoClear(){
+      //  onClear();
+        onUseProgram();
+        setUniforms();
+        onBindTexture();
+
+        glEnableVertexAttribArray(vPositionLocation);
+        glEnableVertexAttribArray(vTextureCoordinateLocation);
+
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP,0,4);
+        // Disable vertex array
+        GLES20.glDisableVertexAttribArray(vPositionLocation);
+        GLES20.glDisableVertexAttribArray(vTextureCoordinateLocation);
+    }
+
 
 
 }

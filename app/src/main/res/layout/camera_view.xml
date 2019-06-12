@@ -157,7 +157,7 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:background="@drawable/bt_choose_filter"
-        android:onClick="changeCamera"
+        android:onClick="chooseFilter"
         android:id="@+id/bt_choose_filter"
         android:layout_toRightOf="@+id/takePhoto_bt"
         android:layout_marginLeft="80dp"

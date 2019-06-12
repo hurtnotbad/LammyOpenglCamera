@@ -96,7 +96,9 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
         cameraFilter = new CameraFilter(context);
         showFilter = FilterManager.noFilter;
         groupFilter = new GroupFilter(cameraFilter);
-        groupFilter.addFilter(filterManager.zipPkmAnimationFilter);
+//        groupFilter.addFilter(filterManager.zipPkmAnimationFilter);
+//        groupFilter.addFilter(FilterManager.noFilter);
+//        groupFilter.addFilter(FilterManager.grayFilter);
     }
 
 
@@ -130,12 +132,24 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
     }
 
 
+    private boolean isChooseFilter = false;
+    public void setChooseFilter(boolean isChoose){
+        isChooseFilter = isChoose;
+    }
     @Override
     public void onDrawFrame(GL10 gl) {
-        groupFilter.draw();
-        showFilter.setTextureId(groupFilter.getOutTexture());
-        showFilter.draw();
-        callbackIfNeeded();
+        if(!isChooseFilter){
+            groupFilter.draw();
+            showFilter.setTextureId(groupFilter.getOutTexture());
+            showFilter.draw();
+            callbackIfNeeded();
+        }
+        else{
+            cameraFilter.draw();
+            int textureId = cameraFilter.getOutTextureId();
+            filterManager.drawFilters(textureId, cameraFilter.getWidth(),cameraFilter.getHeight() );
+        }
+
     }
 
 

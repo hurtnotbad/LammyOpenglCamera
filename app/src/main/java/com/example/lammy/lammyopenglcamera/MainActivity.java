@@ -81,7 +81,9 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
+    // 是否取消
    static boolean isCancel = false;
+    // 在拍照中
    static boolean isTaking = false;
     public void takePhoto(View view){
         if(isTaking){
@@ -147,6 +149,14 @@ public class MainActivity extends AppCompatActivity{
 
     public void changeCamera(View view){
         fboCameraRender.changeCamera();
+    }
+    public void chooseFilter(View view){
+        fboCameraRender.setChooseFilter(true);
+        bt_takePhoto.setEnabled(false);
+    }
+    public void closeChooseFilter(){
+        fboCameraRender.setChooseFilter(false);
+        bt_takePhoto.setEnabled(true);
     }
     private void requestPermissions() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
@@ -312,10 +322,12 @@ public class MainActivity extends AppCompatActivity{
                     int state = chooseView.getState();
                 synchronized (GroupFilter.class) {
                     if (state == 0) {
+                        closeChooseFilter();
                         seekBar.setVisibility(View.INVISIBLE);
                         fboCameraRender.removeAllFilter();
                         fboCameraRender.addFilter(FilterManager.zipPkmAnimationFilter);
                     } else if (state == 1) {
+                        closeChooseFilter();
                         fboCameraRender.removeAllFilter();
                         seekBar.setVisibility(View.VISIBLE);
                         fboCameraRender.addFilter(FilterManager.zipPkmAnimationFilter);
