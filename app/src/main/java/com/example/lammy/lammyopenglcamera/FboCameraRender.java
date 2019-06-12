@@ -2,34 +2,20 @@ package com.example.lammy.lammyopenglcamera;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.SurfaceTexture;
 import android.media.MediaScannerConnection;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Environment;
-
-import android.util.DisplayMetrics;
-import android.util.Size;
 import android.view.SurfaceHolder;
-import android.widget.RelativeLayout;
-
-
 import com.example.lammy.lammyopenglcamera.Utils.LogUtil;
 import com.example.lammy.lammyopenglcamera.Utils.MatrixUtils;
 import com.example.lammy.lammyopenglcamera.helper.FBOHelper;
 import com.example.lammy.lammyopenglcamera.helper.TextureHelper;
-import com.example.lammy.lammyopenglcamera.lyFilter.BeautyFilter;
-import com.example.lammy.lammyopenglcamera.lyFilter.BrightFilter;
 import com.example.lammy.lammyopenglcamera.lyFilter.CameraFilter;
-import com.example.lammy.lammyopenglcamera.lyFilter.FaceColorFilter;
-import com.example.lammy.lammyopenglcamera.lyFilter.GrayFilter;
+import com.example.lammy.lammyopenglcamera.lyFilter.FilterManager;
 import com.example.lammy.lammyopenglcamera.lyFilter.GroupFilter;
 import com.example.lammy.lammyopenglcamera.lyFilter.LyFilter;
-import com.example.lammy.lammyopenglcamera.lyFilter.MagnifierFilter;
-import com.example.lammy.lammyopenglcamera.lyFilter.NoFilter;
-import com.example.lammy.lammyopenglcamera.lyFilter.ZipPkmAnimationFilter;
-
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -52,11 +38,12 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
     private SurfaceTexture mSurfaceTexture;
     private GLSurfaceView glSurfaceView;
     private CameraInterface cameraInterface;
-
+    private FilterManager filterManager;
 
     public FboCameraRender(Context context) {
         this.context = context;
         cameraInterface = new CameraInterface(context);
+        filterManager =  FilterManager.getInstance();
     }
 
     public void setGlSurfaceView(GLSurfaceView glSurfaceView) {
@@ -92,6 +79,7 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         initFilter();
+
         mSurfaceTexture = cameraFilter.getmSurfaceTexture();
         cameraInterface.setSurfaceTexture(mSurfaceTexture);
         cameraInterface.openCamera();
@@ -100,40 +88,15 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
 
 
     public CameraFilter cameraFilter;
-    public GrayFilter grayFilter;
     public GroupFilter groupFilter;
     public LyFilter showFilter;
-    public FaceColorFilter faceColorFilter;
-    public BeautyFilter beautyFilter;
-    public MagnifierFilter magnifierFilter;
-    public ZipPkmAnimationFilter zipPkmAnimationFilter;
-    public BrightFilter brightFilter;
+
     private void initFilter(){
+        filterManager.initAllFilter(context);
         cameraFilter = new CameraFilter(context);
-        showFilter = new NoFilter(context);
+        showFilter = FilterManager.noFilter;
         groupFilter = new GroupFilter(cameraFilter);
-
-
-        beautyFilter = new BeautyFilter(context);
-//        beautyFilter.setBeautyProgress(3);
-        faceColorFilter = new FaceColorFilter(context);
-//        faceColorFilter.setIntensity(0.5f);
-
-        grayFilter = new GrayFilter(context);
-
-        magnifierFilter = new MagnifierFilter(context);
-        magnifierFilter.setCenterPoint(new float[]{0.6f,0.5f});
-        magnifierFilter.setOpinionSize(2f);
-        magnifierFilter.setR(0.3f);
-
-        zipPkmAnimationFilter=new ZipPkmAnimationFilter(context);
-        brightFilter = new BrightFilter(context);
-        brightFilter.setBrightness(0.2f);
-
-        groupFilter.addFilter(zipPkmAnimationFilter);
-//        beautyFilter.setBeautyProgress(6);
-//        groupFilter.addFilter(beautyFilter);
-//        groupFilter.addFilter(grayFilter);
+        groupFilter.addFilter(filterManager.zipPkmAnimationFilter);
     }
 
 

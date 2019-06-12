@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.lammy.lammyopenglcamera.lyFilter.BeautyFilter;
 import com.example.lammy.lammyopenglcamera.lyFilter.FaceColorFilter;
+import com.example.lammy.lammyopenglcamera.lyFilter.FilterManager;
 import com.example.lammy.lammyopenglcamera.lyFilter.GroupFilter;
 
 import java.io.File;
@@ -290,8 +291,8 @@ public class MainActivity extends AppCompatActivity{
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-               fboCameraRender.faceColorFilter.setIntensity(progress/100f);
-               fboCameraRender.beautyFilter.setBeautyProgress(progress/20 + 1);
+               FilterManager.faceColorFilter.setIntensity(progress/100f);
+               FilterManager.beautyFilter.setBeautyProgress(progress/20 + 1);
             }
 
             @Override
@@ -313,13 +314,13 @@ public class MainActivity extends AppCompatActivity{
                     if (state == 0) {
                         seekBar.setVisibility(View.INVISIBLE);
                         fboCameraRender.removeAllFilter();
-                        fboCameraRender.addFilter(fboCameraRender.zipPkmAnimationFilter);
+                        fboCameraRender.addFilter(FilterManager.zipPkmAnimationFilter);
                     } else if (state == 1) {
                         fboCameraRender.removeAllFilter();
                         seekBar.setVisibility(View.VISIBLE);
-                        fboCameraRender.addFilter(fboCameraRender.zipPkmAnimationFilter);
-                        fboCameraRender.addFilter(fboCameraRender.faceColorFilter);
-                        fboCameraRender.addFilter(fboCameraRender.beautyFilter);
+                        fboCameraRender.addFilter(FilterManager.zipPkmAnimationFilter);
+                        fboCameraRender.addFilter(FilterManager.faceColorFilter);
+                        fboCameraRender.addFilter(FilterManager.beautyFilter);
                     }
                 }
             }
