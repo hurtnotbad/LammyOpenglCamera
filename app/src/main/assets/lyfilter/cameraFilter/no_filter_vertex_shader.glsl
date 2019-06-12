@@ -5,4 +5,5 @@ void main()
 {
     gl_Position = vPosition;
     textureCoordinate = inputTextureCoordinate;
+
 }

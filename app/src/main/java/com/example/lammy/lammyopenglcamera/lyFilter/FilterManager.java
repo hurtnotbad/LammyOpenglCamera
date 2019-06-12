@@ -22,13 +22,13 @@ public class FilterManager {
     }
 
 
-    public static NoFilter noFilter;
-    public static GrayFilter grayFilter;
-    public static FaceColorFilter faceColorFilter;
-    public static BeautyFilter beautyFilter;
-    public static MagnifierFilter magnifierFilter;
-    public static ZipPkmAnimationFilter zipPkmAnimationFilter;
-    public static BrightFilter brightFilter;
+    public  NoFilter noFilter;
+    public  GrayFilter grayFilter;
+    public  FaceColorFilter faceColorFilter;
+    public  BeautyFilter beautyFilter;
+    public  MagnifierFilter magnifierFilter;
+    public  ZipPkmAnimationFilter zipPkmAnimationFilter;
+    public  BrightFilter brightFilter;
 
     public void initAllFilter(Context context){
         if(noFilter == null){

@@ -301,8 +301,8 @@ public class MainActivity extends AppCompatActivity{
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-               FilterManager.faceColorFilter.setIntensity(progress/100f);
-               FilterManager.beautyFilter.setBeautyProgress(progress/20 + 1);
+               FilterManager.getInstance().faceColorFilter.setIntensity(progress/100f);
+               FilterManager.getInstance().beautyFilter.setBeautyProgress(progress/20 + 1);
             }
 
             @Override
@@ -325,14 +325,14 @@ public class MainActivity extends AppCompatActivity{
                         closeChooseFilter();
                         seekBar.setVisibility(View.INVISIBLE);
                         fboCameraRender.removeAllFilter();
-                        fboCameraRender.addFilter(FilterManager.zipPkmAnimationFilter);
+                        fboCameraRender.addFilter(FilterManager.getInstance().zipPkmAnimationFilter);
                     } else if (state == 1) {
                         closeChooseFilter();
                         fboCameraRender.removeAllFilter();
                         seekBar.setVisibility(View.VISIBLE);
-                        fboCameraRender.addFilter(FilterManager.zipPkmAnimationFilter);
-                        fboCameraRender.addFilter(FilterManager.faceColorFilter);
-                        fboCameraRender.addFilter(FilterManager.beautyFilter);
+                        fboCameraRender.addFilter(FilterManager.getInstance().zipPkmAnimationFilter);
+                        fboCameraRender.addFilter(FilterManager.getInstance().faceColorFilter);
+                        fboCameraRender.addFilter(FilterManager.getInstance().beautyFilter);
                     }
                 }
             }
@@ -340,8 +340,11 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
-
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        System.exit(0); // 解决 返回键后，重新进入应用会导致cameraFilter中的 顶点纹理映射失效, 预览是倒立的
+    }
 }
 /**
  *

@@ -76,6 +76,8 @@ public  class CameraFilter {
             1f,0f
     };
 
+
+
     private int vPositionLocation;
     private int vTextureCoordinateLocation;
     private int vTextureLocation;

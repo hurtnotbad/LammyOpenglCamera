@@ -94,7 +94,7 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
     private void initFilter(){
         filterManager.initAllFilter(context);
         cameraFilter = new CameraFilter(context);
-        showFilter = FilterManager.noFilter;
+        showFilter = FilterManager.getInstance().noFilter;
         groupFilter = new GroupFilter(cameraFilter);
 //        groupFilter.addFilter(filterManager.zipPkmAnimationFilter);
 //        groupFilter.addFilter(FilterManager.noFilter);
