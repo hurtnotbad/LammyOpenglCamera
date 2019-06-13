@@ -84,6 +84,7 @@ public class FboCameraRender implements GLSurfaceView.Renderer {
         cameraInterface.setSurfaceTexture(mSurfaceTexture);
         cameraInterface.openCamera();
         cameraFilter.setCameraId(cameraInterface.getCameraId());
+//        filterManager.getFlitersStartPoints(cameraFilter.getWidth(), cameraFilter.getHeight());
     }
 
 
