@@ -17,7 +17,7 @@ public class BrightFilter extends LyFilter{
         super(context, vertexShaderAssetsPath, fragmentShaderAssetsPath);
     }
     public BrightFilter(Context context) {
-        super(context,  "lyfilter/bright/bright_filter_vertex_shader.glsl" ,  "lyfilter/bright/bright_filter_fragment_shader.glsl" );
+        super(context,  NoFilterVertexShader ,  "lyfilter/bright/bright_filter_fragment_shader.glsl" );
     }
 
 
@@ -31,7 +31,6 @@ public class BrightFilter extends LyFilter{
         vPositionLocation = glGetAttribLocation(program ,  "vPosition");
         vTextureCoordinateLocation = glGetAttribLocation(program ,  "inputTextureCoordinate" );
         vTextureLocation = GLES20.glGetUniformLocation(program,  "inputImageTexture" );
-        vMatrixLocation =  GLES20.glGetUniformLocation(program,  "vMatrix" );
 
         brightnessLocation =  GLES20.glGetUniformLocation(program,  "brightness" );
     }

@@ -7,7 +7,7 @@ const highp float mHeight=1440.0;
 uniform mat4 vMatrix;
 void main( )
 {
-    gl_Position = vMatrix*vPosition;
+    gl_Position = vMatrix*vPosition;//vMatrix*
     textureCoordinate = vCoord;
 
     highp float mul_x = 2.0 / mWidth;

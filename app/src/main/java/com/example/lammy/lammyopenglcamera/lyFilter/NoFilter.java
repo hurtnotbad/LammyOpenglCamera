@@ -15,7 +15,7 @@ public class NoFilter extends LyFilter{
         super(context, vertexShaderAssetsPath, fragmentShaderAssetsPath);
     }
     public NoFilter(Context context) {
-        super(context, "lyfilter/noFilter/no_filter_vertex_shader.glsl", "lyfilter/noFilter/no_filter_fragment_shader.glsl");
+        super(context, NoFilterVertexShader, "lyfilter/noFilter/no_filter_fragment_shader.glsl");
     }
 
 

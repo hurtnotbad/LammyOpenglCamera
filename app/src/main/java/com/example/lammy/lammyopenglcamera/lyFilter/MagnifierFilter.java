@@ -15,7 +15,8 @@ public class MagnifierFilter extends LyFilter {
     }
 
     public MagnifierFilter(Context context) {
-        super(context, "lyfilter/magnifier/magnifier_filter_vertex_shader.glsl", "lyfilter/magnifier/magnifier_filter_fragment_shader.glsl");
+//        super(context, "lyfilter/magnifier/magnifier_filter_vertex_shader.glsl", "lyfilter/magnifier/magnifier_filter_fragment_shader.glsl");
+        super(context, NoFilterVertexShader, "lyfilter/magnifier/magnifier_filter_fragment_shader.glsl");
 
     }
 

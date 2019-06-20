@@ -5,12 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
-
 import com.example.lammy.lammyopenglcamera.helper.TextureHelper;
-
-
 import java.io.IOException;
-
 import static android.opengl.GLES20.glGetAttribLocation;
 import static android.opengl.GLES20.glUniform1f;
 
@@ -27,13 +23,14 @@ public class FaceColorFilter extends LyFilter {
 
     public FaceColorFilter(Context context) {
         super(context, "lyfilter/FaceColorFilter/faceColor.vert", "lyfilter/FaceColorFilter/faceColor.frag");
+//        super(context, NoFilterVertexShader, "lyfilter/FaceColorFilter/faceColor.frag");
         try {
             bitmap = BitmapFactory.decodeStream(context.getAssets().open("lyfilter/FaceColorFilter/purity.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
         // 之前在initUniforms 中调用maskTextures ，发现 maskTextures 为空，原因在于
-        // initUniforms是 重写父类方法，initUniforms在父类初始化中调用，此时maskTextures为空，子类未创建
+        // initUniforms是 重写父类方法，initUniforms在父类初始化中调用，此时maskTextures为空，子类未创建，创建子类的时候，先创建父类
         TextureHelper.genTexturesWithParameter(1,maskTextures,0, GLES20.GL_RGBA,512,512);
     }
 
@@ -49,7 +46,7 @@ public class FaceColorFilter extends LyFilter {
         vTextureCoordinateLocation = glGetAttribLocation(program , "vCoord");
         vTextureLocation = GLES20.glGetUniformLocation(program, "vTexture");
         maskTextureLocation = GLES20.glGetUniformLocation(program, "maskTexture");
-        vMatrixLocation =  GLES20.glGetUniformLocation(program, "vMatrix");
+       // vMatrixLocation =  GLES20.glGetUniformLocation(program, "vMatrix");
         intensityLocation =  GLES20.glGetUniformLocation(program, "intensity");
 //        try {
 //             bitmap = BitmapFactory.decodeStream(context.getAssets().open("lyfilter/FaceColorFilter/purity.png"));
@@ -63,7 +60,6 @@ public class FaceColorFilter extends LyFilter {
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
-
 
     }
 
@@ -84,8 +80,9 @@ public class FaceColorFilter extends LyFilter {
 
 
 
-    // 绑定纹理得在draw中每次调用，不然颜色不正确
+    // 绑定纹理得在draw中每次调用，通过测试时间，基本不耗时，0或者1ms
     public void setMask(){
+          //  long t1 = System.currentTimeMillis();
             GLES20.glActiveTexture(GLES20.GL_TEXTURE0 + type + 1);
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, maskTextures[0]);
             if(bitmap!=null&&!bitmap.isRecycled()){
@@ -93,7 +90,7 @@ public class FaceColorFilter extends LyFilter {
                 bitmap.recycle();
             }
             GLES20.glUniform1i(maskTextureLocation, type + 1);
-
+          //  LogUtil.e("setMask time = " + (System.currentTimeMillis() - t1));
     }
 
 }

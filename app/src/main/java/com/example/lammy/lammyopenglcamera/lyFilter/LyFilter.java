@@ -17,6 +17,7 @@ import static android.opengl.GLES20.glEnableVertexAttribArray;
 public abstract class LyFilter {
 
 
+    public static String NoFilterVertexShader = "lyfilter/noFilter/no_filter_vertex_shader.glsl";
     /**
      * 程序句柄
      */
