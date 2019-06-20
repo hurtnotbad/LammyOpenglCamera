@@ -22,8 +22,8 @@ public class FaceColorFilter extends LyFilter {
     }
 
     public FaceColorFilter(Context context) {
-        super(context, "lyfilter/FaceColorFilter/faceColor.vert", "lyfilter/FaceColorFilter/faceColor.frag");
-//        super(context, NoFilterVertexShader, "lyfilter/FaceColorFilter/faceColor.frag");
+//        super(context, "lyfilter/FaceColorFilter/faceColor.vert", "lyfilter/FaceColorFilter/faceColor.frag");
+        super(context, NoFilterVertexShader, "lyfilter/FaceColorFilter/faceColor.frag");
         try {
             bitmap = BitmapFactory.decodeStream(context.getAssets().open("lyfilter/FaceColorFilter/purity.png"));
         } catch (IOException e) {
@@ -43,7 +43,7 @@ public class FaceColorFilter extends LyFilter {
     @Override
     public void initUniforms() {
         vPositionLocation = glGetAttribLocation(program , "vPosition");
-        vTextureCoordinateLocation = glGetAttribLocation(program , "vCoord");
+        vTextureCoordinateLocation = glGetAttribLocation(program , "inputTextureCoordinate");
         vTextureLocation = GLES20.glGetUniformLocation(program, "vTexture");
         maskTextureLocation = GLES20.glGetUniformLocation(program, "maskTexture");
        // vMatrixLocation =  GLES20.glGetUniformLocation(program, "vMatrix");

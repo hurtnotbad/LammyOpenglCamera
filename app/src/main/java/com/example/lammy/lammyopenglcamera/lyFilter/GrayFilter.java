@@ -15,7 +15,7 @@ public class GrayFilter extends LyFilter {
         super(context, vertexShaderAssetsPath, fragmentShaderAssetsPath);
     }
     public GrayFilter(Context context) {
-        super(context, "lyfilter/grayFilter/gray_filter_vertex_shader.glsl", "lyfilter/grayFilter/gray_filter_fragment_shader.glsl");
+        super(context, NoFilterVertexShader, "lyfilter/grayFilter/gray_filter_fragment_shader.glsl");
 
     }
 
