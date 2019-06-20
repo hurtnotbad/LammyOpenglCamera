@@ -24,7 +24,6 @@ public class NoFilter extends LyFilter{
         vPositionLocation = glGetAttribLocation(program , "vPosition");
         vTextureCoordinateLocation = glGetAttribLocation(program , "inputTextureCoordinate");
         vTextureLocation = GLES20.glGetUniformLocation(program, "vTexture");
-        vMatrixLocation =  GLES20.glGetUniformLocation(program, "vMatrix");
     }
 
 

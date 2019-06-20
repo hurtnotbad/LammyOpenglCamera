@@ -16,13 +16,7 @@ import static android.opengl.GLES20.glEnableVertexAttribArray;
 
 public abstract class LyFilter {
 
-    private static final String TAG="lyFilter";
 
-
-    /**
-     * 单位矩阵
-     */
-    public static final float[] OM= MatrixUtils.getOriginalMatrix();
     /**
      * 程序句柄
      */
@@ -88,36 +82,13 @@ public abstract class LyFilter {
         return type;
     }
     protected void onBindTexture() {
-
-//        Bitmap bitmap = null;
-//        try {
-//            if(index % 2 == 0) {
-//                bitmap = BitmapFactory.decodeStream(context.getAssets().open("lyfilter/lookup/purity.png"));
-//            }else{
-//                bitmap = BitmapFactory.decodeStream(context.getAssets().open("lyfilter/lookup/highkey.png"));
-//            }
-//            index++;
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0+type);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D,textureId);
-
-//        ByteBuffer mBuffer = ByteBuffer.allocate(width * height * 4);
-//        GLES20.glReadPixels(0, 0, width, height, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, mBuffer);
-//        bitmap=Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888);
-//        bitmap.copyPixelsFromBuffer(mBuffer);
-//        GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D,0,GLES20.GL_RGBA,width,height,0,GLES20.GL_RGBA,GLES20.GL_UNSIGNED_BYTE,mBuffer);
 //        if(bitmap!=null&&!bitmap.isRecycled()){
 //            GLUtils.texImage2D(GLES20.GL_TEXTURE_2D,0,bitmap,0);
 //            bitmap.recycle();
 //        }
         GLES20.glUniform1i(vTextureLocation,type);
-
-//        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-//        GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, textureId);
-//        glUniform1i(vTextureLocation, 0);
     }
 
 
@@ -137,20 +108,7 @@ public abstract class LyFilter {
 
 
     public abstract void  initUniforms();
-//    public void  initUniforms(){
-//        vPositionLocation = glGetAttribLocation(program , vPositionString);
-//        vTextureCoordinateLocation = glGetAttribLocation(program , vTextureCoordinateString);
-//        vTextureLocation = GLES20.glGetUniformLocation(program, vTextureString);
-//        vMatrixLocation =  GLES20.glGetUniformLocation(program, vMatrixString);
-//
-//        initOtherUniform();
-//    }
-//    public void initBaseUniform(String vPositionString , String vTextureCoordinateString ,String vTextureString ,String vMatrixString){
-//        this.vPositionString = vPositionString;
-//        this.vTextureCoordinateString = vTextureCoordinateString;
-//        this.vTextureString = vTextureString;
-//        this.vMatrixString = vMatrixString;
-//    }
+
 
     public void setUniforms(){
         GLES20.glUniformMatrix4fv(vMatrixLocation, 1, false, pointsMatrix, 0);
@@ -186,7 +144,6 @@ public abstract class LyFilter {
         this.width =width;
         this.height = height;
     }
-
 
     public void draw(){
         onClear();
